@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" fill="none">
+  <rect width="400" height="300" fill="#f1f5f9"/>
+  <g transform="translate(150, 100)">
+    <path d="M50 30 L50 70 L30 66 Z" fill="#cbd5e1"/>
+    <path d="M50 30 L50 70 L70 64 Z" fill="#94a3b8"/>
+    <path d="M20 75 Q50 90 80 75 L75 85 Q50 95 25 85 Z" fill="#cbd5e1"/>
+  </g>
+  <text x="200" y="180" font-family="sans-serif" font-size="14" fill="#94a3b8" text-anchor="middle">Loading...</text>
+</svg>

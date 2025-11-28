@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50">
+  <!-- Yacht Icon -->
+  <g transform="translate(5, 5)">
+    <path d="M5 28 Q20 35 35 28 L32 33 Q20 38 8 33 Z" fill="#fff"/>
+    <path d="M20 8 L20 26 L10 24 Z" fill="#fff" opacity="0.9"/>
+    <path d="M20 8 L20 26 L30 23 Z" fill="#fff" opacity="0.7"/>
+    <line x1="20" y1="8" x2="20" y2="28" stroke="#fff" stroke-width="1.5"/>
+  </g>
+  <!-- Text -->
+  <text x="50" y="24" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#fff">PHUKET</text>
+  <text x="50" y="40" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="rgba(255,255,255,0.8)">YACHT & TOURS</text>
+</svg>

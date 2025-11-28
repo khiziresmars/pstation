@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 50">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0891b2"/>
+      <stop offset="100%" style="stop-color:#0e7490"/>
+    </linearGradient>
+  </defs>
+  <!-- Yacht Icon -->
+  <g transform="translate(5, 5)">
+    <path d="M5 28 Q20 35 35 28 L32 33 Q20 38 8 33 Z" fill="url(#logoGrad)"/>
+    <path d="M20 8 L20 26 L10 24 Z" fill="url(#logoGrad)" opacity="0.9"/>
+    <path d="M20 8 L20 26 L30 23 Z" fill="url(#logoGrad)" opacity="0.7"/>
+    <line x1="20" y1="8" x2="20" y2="28" stroke="url(#logoGrad)" stroke-width="1.5"/>
+  </g>
+  <!-- Text -->
+  <text x="50" y="24" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1e293b">PHUKET</text>
+  <text x="50" y="40" font-family="Inter, sans-serif" font-size="12" font-weight="500" fill="#64748b">YACHT & TOURS</text>
+</svg>
