@@ -32,8 +32,8 @@ class EmailService
             'encryption' => $_ENV['MAIL_ENCRYPTION'] ?? 'tls',
             'username' => $_ENV['MAIL_USERNAME'] ?? '',
             'password' => $_ENV['MAIL_PASSWORD'] ?? '',
-            'from_address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@phuket-yachts.com',
-            'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'Phuket Station & Tours',
+            'from_address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@phuket-station.com',
+            'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'Phuket Station',
         ];
     }
 
@@ -291,13 +291,13 @@ class EmailService
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚤 Phuket Station & Tours</h1>
+            <h1>🚤 Phuket Station</h1>
         </div>
         <div class="content">
             {$body}
         </div>
         <div class="footer">
-            <p>Phuket Station & Tours Co., Ltd.</p>
+            <p>Phuket Station Co., Ltd.</p>
             <p>© 2024 All rights reserved</p>
         </div>
     </div>
@@ -336,7 +336,7 @@ HTML;
     <p><strong>Total:</strong> ฿{$b['total_price_thb']}</p>
 </div>
 <p>We look forward to seeing you!</p>
-<p>Best regards,<br>Phuket Station & Tours Team</p>
+<p>Best regards,<br>Phuket Station Team</p>
 HTML;
     }
 
@@ -367,6 +367,58 @@ HTML;
 <p>{$data['message']}</p>
 <p><small>Sent at: {$data['timestamp']}</small></p>
 HTML;
+    }
+
+    /**
+     * Send email verification
+     */
+    public function sendVerificationEmail(string $email, string $token, string $firstName = ''): array
+    {
+        $appUrl = $_ENV['APP_URL'] ?? 'https://phuket-station.com';
+        $verifyUrl = "{$appUrl}/auth/verify?token={$token}";
+
+        $subject = "Verify your email - Phuket Station";
+        $body = <<<HTML
+<h2>Welcome to Phuket Station!</h2>
+<p>Dear {$firstName},</p>
+<p>Thank you for registering. Please verify your email address by clicking the button below:</p>
+<p style="text-align: center; margin: 30px 0;">
+    <a href="{$verifyUrl}" class="button">Verify Email</a>
+</p>
+<p>Or copy and paste this link into your browser:</p>
+<p style="word-break: break-all; color: #0088cc;">{$verifyUrl}</p>
+<p>This link will expire in 24 hours.</p>
+<p>If you did not create an account, please ignore this email.</p>
+<p>Best regards,<br>Phuket Station Team</p>
+HTML;
+
+        return $this->send($email, $subject, $body);
+    }
+
+    /**
+     * Send password reset email
+     */
+    public function sendPasswordResetEmail(string $email, string $token, string $firstName = ''): array
+    {
+        $appUrl = $_ENV['APP_URL'] ?? 'https://phuket-station.com';
+        $resetUrl = "{$appUrl}/auth/reset-password?token={$token}";
+
+        $subject = "Reset your password - Phuket Station";
+        $body = <<<HTML
+<h2>Password Reset Request</h2>
+<p>Dear {$firstName},</p>
+<p>We received a request to reset your password. Click the button below to create a new password:</p>
+<p style="text-align: center; margin: 30px 0;">
+    <a href="{$resetUrl}" class="button">Reset Password</a>
+</p>
+<p>Or copy and paste this link into your browser:</p>
+<p style="word-break: break-all; color: #0088cc;">{$resetUrl}</p>
+<p>This link will expire in 1 hour.</p>
+<p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+<p>Best regards,<br>Phuket Station Team</p>
+HTML;
+
+        return $this->send($email, $subject, $body);
     }
 
     /**

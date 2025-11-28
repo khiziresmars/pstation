@@ -17,11 +17,13 @@ class AuthService
     private Database $db;
     private string $jwtSecret;
     private int $jwtExpiry = 86400 * 30; // 30 days
+    private ?EmailService $emailService = null;
 
     public function __construct()
     {
         $this->db = Database::getInstance();
-        $this->jwtSecret = $_ENV['JWT_SECRET'] ?? 'phuket-yacht-secret-key-2024';
+        $this->jwtSecret = $_ENV['JWT_SECRET'] ?? 'phuket-station-secret-key-2024';
+        $this->emailService = new EmailService();
     }
 
     // ==========================================
@@ -212,8 +214,12 @@ class AuthService
         // Generate verification token
         $verificationToken = $this->generateVerificationToken($userId);
 
-        // TODO: Send verification email
-        // $this->sendVerificationEmail($email, $verificationToken);
+        // Send verification email
+        $this->emailService->sendVerificationEmail(
+            $email,
+            $verificationToken,
+            $userData['first_name'] ?? ''
+        );
 
         $token = $this->generateToken($user);
 
@@ -295,7 +301,7 @@ class AuthService
      */
     public function requestPasswordReset(string $email): array
     {
-        $user = $this->db->queryOne("SELECT id FROM users WHERE email = ?", [$email]);
+        $user = $this->db->queryOne("SELECT id, first_name FROM users WHERE email = ?", [$email]);
 
         if (!$user) {
             // Don't reveal if email exists
@@ -313,8 +319,12 @@ class AuthService
             [$user['id'], $token, $expiresAt, $token, $expiresAt]
         );
 
-        // TODO: Send reset email
-        // $this->sendPasswordResetEmail($email, $token);
+        // Send reset email
+        $this->emailService->sendPasswordResetEmail(
+            $email,
+            $token,
+            $user['first_name'] ?? ''
+        );
 
         return ['success' => true, 'message' => 'If email exists, reset link will be sent'];
     }
