@@ -9,7 +9,7 @@ import { usePrice } from '@/hooks/usePrice';
 import { useTelegram } from '@/hooks/useTelegram';
 import { ProfileSkeleton } from '@/components/common/Skeleton';
 import { ErrorState } from '@/components/common/ErrorState';
-import type { Currency } from '@/types';
+import type { Currency, Booking } from '@/types';
 
 type TabType = 'overview' | 'bookings' | 'settings' | 'about';
 
@@ -122,7 +122,7 @@ export default function ProfilePage() {
             <div className="text-center border-l border-tg-secondary-bg">
               <p className="text-sm text-tg-hint">{t('total_bookings')}</p>
               <p className="text-2xl font-bold text-tg-text mt-1">
-                {bookingsData?.meta?.total || 0}
+                {bookingsData?.pagination?.total || 0}
               </p>
               <p className="text-xs text-tg-hint mt-1">
                 {t('all_time')}
@@ -227,7 +227,7 @@ export default function ProfilePage() {
 }
 
 function BookingsTab({ bookings, formatPrice, navigate, t }: {
-  bookings: Array<Record<string, unknown>>;
+  bookings: Booking[];
   formatPrice: (n: number) => string;
   navigate: (p: string) => void;
   t: (k: string) => string;
@@ -254,7 +254,7 @@ function BookingsTab({ bookings, formatPrice, navigate, t }: {
     <div className="space-y-3">
       {bookings.map((b) => (
         <motion.div
-          key={b.id as number}
+          key={b.id}
           className="card p-4"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -262,15 +262,15 @@ function BookingsTab({ bookings, formatPrice, navigate, t }: {
         >
           <div className="flex justify-between items-start">
             <div>
-              <p className="font-medium text-tg-text">{b.item_name as string}</p>
-              <p className="text-sm text-tg-hint">{b.booking_reference as string}</p>
-              <p className="text-sm text-tg-hint">{b.booking_date as string}</p>
+              <p className="font-medium text-tg-text">{b.item_name}</p>
+              <p className="text-sm text-tg-hint">{b.booking_reference}</p>
+              <p className="text-sm text-tg-hint">{b.booking_date}</p>
             </div>
             <div className="text-right">
-              <span className={`px-2 py-1 rounded-full text-xs ${statusColors[b.status as string] || 'bg-gray-100'}`}>
+              <span className={`px-2 py-1 rounded-full text-xs ${statusColors[b.status] || 'bg-gray-100'}`}>
                 {t(`status_${b.status}`)}
               </span>
-              <p className="font-bold text-tg-accent-text mt-1">{formatPrice(b.total_price_thb as number)}</p>
+              <p className="font-bold text-tg-accent-text mt-1">{formatPrice(b.total_price_thb)}</p>
             </div>
           </div>
         </motion.div>

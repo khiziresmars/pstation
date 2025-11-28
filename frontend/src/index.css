@@ -103,7 +103,7 @@ html, body {
   .input {
     @apply w-full px-4 py-3 bg-tg-secondary-bg rounded-lg text-tg-text
            placeholder:text-tg-hint border-none outline-none
-           focus:ring-2 focus:ring-tg-button/30 transition-all;
+           focus:ring-2 focus:ring-tg-button focus:ring-opacity-30 transition-all;
   }
 
   .skeleton {
@@ -123,7 +123,9 @@ html, body {
   }
 
   .badge-primary {
-    @apply badge bg-tg-button/10 text-tg-button;
+    @apply badge text-tg-button;
+    background-color: var(--tg-theme-button-color, #3390ec);
+    background-color: color-mix(in srgb, var(--tg-theme-button-color, #3390ec) 10%, transparent);
   }
 
   .badge-success {
