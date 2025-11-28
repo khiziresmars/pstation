@@ -33,6 +33,7 @@ use App\Core\Router;
 use App\Core\Response;
 use App\Middleware\CorsMiddleware;
 use App\Middleware\AuthMiddleware;
+use App\Middleware\AdminAuthMiddleware;
 
 try {
     // Create application instance
@@ -229,7 +230,6 @@ try {
     // ===================
     // ADMIN ROUTES
     // ===================
-    use App\Middleware\AdminAuthMiddleware;
 
     // Admin Dashboard
     $router->get('/api/admin/dashboard', 'Admin\\DashboardController@index', [AdminAuthMiddleware::class]);
