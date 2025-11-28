@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/appStore';
-import { api } from '@/services/api';
-import VesselCard from '@/components/VesselCard';
-import TourCard from '@/components/TourCard';
+import api from '@/services/api';
+import { VesselCard } from '@/components/VesselCard';
+import { TourCard } from '@/components/TourCard';
 import { Skeleton } from '@/components/common/Skeleton';
 import { EmptyState } from '@/components/common/EmptyState';
 import styles from './SearchPage.module.css';
@@ -269,13 +269,17 @@ const SearchPage = () => {
               </div>
             ) : (
               <EmptyState
-                icon="search"
+                icon="🔍"
                 title={t.noResults}
-                description={t.noResultsDesc}
-                action={{
-                  label: t.browseVessels,
-                  onClick: () => navigate('/vessels'),
-                }}
+                message={t.noResultsDesc}
+                action={
+                  <button
+                    onClick={() => navigate('/vessels')}
+                    className="px-4 py-2 bg-tg-button text-tg-button-text rounded-lg"
+                  >
+                    {t.browseVessels}
+                  </button>
+                }
               />
             )}
           </>

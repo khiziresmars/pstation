@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
   const { data: bookingsData } = useQuery({
     queryKey: ['userBookings'],
-    queryFn: userApi.getBookings,
+    queryFn: () => userApi.getBookings(),
     enabled: activeTab === 'bookings',
   });
 
@@ -76,7 +76,7 @@ export default function ProfilePage() {
     return <ErrorState onRetry={() => refetch()} />;
   }
 
-  const displayName = profile?.firstName || user?.firstName || t('guest');
+  const displayName = profile?.firstName || user?.firstName || t('guest_user');
 
   return (
     <div className="pb-4">
@@ -122,7 +122,7 @@ export default function ProfilePage() {
             <div className="text-center border-l border-tg-secondary-bg">
               <p className="text-sm text-tg-hint">{t('total_bookings')}</p>
               <p className="text-2xl font-bold text-tg-text mt-1">
-                {profile?.bookingsCount || 0}
+                {bookingsData?.meta?.total || 0}
               </p>
               <p className="text-xs text-tg-hint mt-1">
                 {t('all_time')}
@@ -206,7 +206,7 @@ export default function ProfilePage() {
         )}
 
         {activeTab === 'bookings' && (
-          <BookingsTab bookings={bookingsData?.bookings || []} formatPrice={formatPrice} navigate={navigate} t={t} />
+          <BookingsTab bookings={bookingsData?.data || []} formatPrice={formatPrice} navigate={navigate} t={t} />
         )}
 
         {activeTab === 'settings' && (
@@ -282,7 +282,7 @@ function BookingsTab({ bookings, formatPrice, navigate, t }: {
 function SettingsTab({ language, currency, profile, onLanguageChange, onCurrencyChange, t }: {
   language: string;
   currency: Currency;
-  profile: Record<string, unknown> | undefined;
+  profile: { email?: string } | undefined;
   onLanguageChange: (l: 'en' | 'ru' | 'th') => void;
   onCurrencyChange: (c: Currency) => void;
   t: (k: string) => string;

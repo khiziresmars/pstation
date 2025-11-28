@@ -1,163 +1,26 @@
-/* Offline indicator bar */
 .container {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
+  padding: 0.75rem;
+  background: #f44336;
+  color: white;
+  text-align: center;
+  font-size: 0.875rem;
   z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 16px;
-  background: linear-gradient(135deg, #dc2626, #b91c1c);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 500;
-  animation: slideDown 0.3s ease-out;
-}
-
-.icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
-}
-
-.icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.text {
-  white-space: nowrap;
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-  }
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* Update notification */
-.updateContainer {
-  position: fixed;
-  bottom: 80px;
-  left: 16px;
-  right: 16px;
-  z-index: 9998;
   animation: slideUp 0.3s ease-out;
-}
-
-.updateContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px;
-  background: #1e293b;
-  color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  font-size: 14px;
-}
-
-.updateButton {
-  flex-shrink: 0;
-  padding: 8px 16px;
-  background: #0891b2;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.updateButton:hover {
-  background: #0e7490;
-}
-
-.updateButton:active {
-  transform: scale(0.98);
 }
 
 @keyframes slideUp {
   from {
     transform: translateY(100%);
-    opacity: 0;
   }
   to {
     transform: translateY(0);
-    opacity: 1;
   }
 }
 
-/* Install prompt */
-.installContainer {
-  position: fixed;
-  bottom: 80px;
-  left: 16px;
-  right: 16px;
-  z-index: 9997;
-  animation: slideUp 0.3s ease-out;
-}
-
-.installContent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 14px 16px;
-  background: linear-gradient(135deg, #0891b2, #0e7490);
-  color: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.installInfo {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.installInfo strong {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.installInfo span {
-  font-size: 13px;
-  opacity: 0.85;
-}
-
-.installButton {
-  flex-shrink: 0;
-  padding: 10px 20px;
-  background: #fff;
-  color: #0891b2;
-  border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.installButton:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.installButton:active {
-  transform: scale(0.98);
-}
-
-/* Dark mode support (Telegram theme) */
-@media (prefers-color-scheme: dark) {
-  .updateContent {
-    background: #334155;
-  }
+.icon {
+  margin-right: 0.5rem;
 }

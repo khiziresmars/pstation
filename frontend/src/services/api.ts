@@ -267,6 +267,19 @@ export const userApi = {
     const { data } = await api.put<ApiResponse<null>>(`/user/notifications/${id}/read`);
     return data;
   },
+
+  getGiftCards: async () => {
+    const { data } = await api.get<ApiResponse<GiftCard[]>>('/user/gift-cards');
+    return data.data;
+  },
+
+  changePassword: async (currentPassword: string, newPassword: string) => {
+    const { data } = await api.post<ApiResponse<{ success: boolean }>>('/user/change-password', {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
+    return data.data;
+  },
 };
 
 // ==================
