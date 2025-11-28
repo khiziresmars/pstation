@@ -21,6 +21,8 @@ import { Skeleton } from '@/components/common/Skeleton';
 // Lazy loaded pages
 const GiftCardsPage = lazy(() => import('@/pages/GiftCardsPage'));
 const PaymentPage = lazy(() => import('@/pages/PaymentPage'));
+const AuthPage = lazy(() => import('@/pages/AuthPage'));
+const GoogleCallbackPage = lazy(() => import('@/pages/GoogleCallbackPage'));
 
 // Loading fallback
 const PageLoader = () => (
@@ -113,6 +115,16 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/bookings" element={<BookingsHistoryPage />} />
+            <Route path="/auth" element={
+              <Suspense fallback={<PageLoader />}>
+                <AuthPage />
+              </Suspense>
+            } />
+            <Route path="/auth/google/callback" element={
+              <Suspense fallback={<PageLoader />}>
+                <GoogleCallbackPage />
+              </Suspense>
+            } />
           </Routes>
         </Layout>
       </BrowserRouter>

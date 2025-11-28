@@ -19,7 +19,7 @@ export default function VesselsPage() {
   });
 
   const vesselTypes: { value: VesselType | ''; label: string }[] = [
-    { value: '', label: 'All Types' },
+    { value: '', label: t('all_types') },
     { value: 'yacht', label: t('yacht') },
     { value: 'speedboat', label: t('speedboat') },
     { value: 'catamaran', label: t('catamaran') },
@@ -27,10 +27,10 @@ export default function VesselsPage() {
   ];
 
   const sortOptions = [
-    { value: 'popular', label: 'Most Popular' },
-    { value: 'price_asc', label: 'Price: Low to High' },
-    { value: 'price_desc', label: 'Price: High to Low' },
-    { value: 'rating', label: 'Highest Rated' },
+    { value: 'popular', label: t('most_popular') },
+    { value: 'price_asc', label: t('price_low_high') },
+    { value: 'price_desc', label: t('price_high_low') },
+    { value: 'rating', label: t('highest_rated') },
   ];
 
   return (
@@ -96,21 +96,21 @@ export default function VesselsPage() {
         ) : !data?.data.length ? (
           <EmptyState
             icon="🚤"
-            title="No vessels found"
-            message="Try adjusting your filters"
+            title={t('no_vessels_found')}
+            message={t('try_adjusting_filters')}
             action={
               <button
                 onClick={() => setFilters({})}
                 className="btn-primary"
               >
-                {t('clear')} Filters
+                {t('clear_filters')}
               </button>
             }
           />
         ) : (
           <>
             <p className="text-sm text-tg-hint mb-4">
-              {data.pagination.total} {data.pagination.total === 1 ? 'vessel' : 'vessels'} found
+              {data.pagination.total} {data.pagination.total === 1 ? t('vessel_found') : t('vessels_found')}
             </p>
 
             <div className="grid grid-cols-1 gap-4">

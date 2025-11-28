@@ -6,7 +6,10 @@ interface AppState {
   // User state
   user: User | null;
   isAuthenticated: boolean;
+  authToken: string | null;
   setUser: (user: User | null) => void;
+  setAuthToken: (token: string | null) => void;
+  logout: () => void;
 
   // Theme
   theme: 'light' | 'dark';
@@ -52,7 +55,20 @@ export const useAppStore = create<AppState>()(
       // User
       user: null,
       isAuthenticated: false,
+      authToken: null,
       setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setAuthToken: (authToken) => {
+        set({ authToken });
+        if (authToken) {
+          localStorage.setItem('auth_token', authToken);
+        } else {
+          localStorage.removeItem('auth_token');
+        }
+      },
+      logout: () => {
+        set({ user: null, isAuthenticated: false, authToken: null });
+        localStorage.removeItem('auth_token');
+      },
 
       // Theme
       theme: 'light',

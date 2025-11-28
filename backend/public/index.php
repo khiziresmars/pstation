@@ -193,7 +193,26 @@ try {
     // ===================
     // AUTH ROUTES
     // ===================
+
+    // Telegram auth
     $router->post('/api/auth/telegram', 'AuthController@telegramAuth');
+
+    // Email auth
+    $router->post('/api/auth/register', 'AuthController@register');
+    $router->post('/api/auth/login', 'AuthController@login');
+    $router->post('/api/auth/verify-email', 'AuthController@verifyEmail');
+    $router->post('/api/auth/forgot-password', 'AuthController@forgotPassword');
+    $router->post('/api/auth/reset-password', 'AuthController@resetPassword');
+
+    // Google auth
+    $router->get('/api/auth/google', 'AuthController@googleUrl');
+    $router->post('/api/auth/google/callback', 'AuthController@googleCallback');
+
+    // Current user
+    $router->get('/api/auth/me', 'AuthController@me', [AuthMiddleware::class]);
+
+    // Admin auth
+    $router->post('/api/admin/auth/login', 'AuthController@adminLogin');
 
     // ===================
     // ADMIN ROUTES

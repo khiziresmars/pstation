@@ -54,7 +54,7 @@ export default function ProfilePage() {
       hapticImpact('medium');
       shareUrl(
         referralStats.referral_link,
-        '🚤 Book premium yachts & island tours in Phuket! Use my link to get started:'
+        `🚤 ${t('share_referral_text')}`
       );
     }
   };
@@ -103,7 +103,7 @@ export default function ProfilePage() {
               {formatPrice(profile?.cashbackBalance || 0)}
             </p>
             <p className="text-xs text-green-600 mt-1">
-              Earn 5% cashback on every booking!
+              {t('cashback_info')}
             </p>
           </div>
         </motion.div>

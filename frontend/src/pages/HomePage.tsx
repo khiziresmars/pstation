@@ -62,7 +62,7 @@ export default function HomePage() {
             <span className="text-3xl">🚤</span>
             <div className="text-left">
               <div className="font-semibold text-tg-text">{t('vessels')}</div>
-              <div className="text-xs text-tg-hint">Yachts & Boats</div>
+              <div className="text-xs text-tg-hint">{t('yachts_boats_subtitle')}</div>
             </div>
           </motion.button>
 
@@ -74,7 +74,7 @@ export default function HomePage() {
             <span className="text-3xl">🏝️</span>
             <div className="text-left">
               <div className="font-semibold text-tg-text">{t('tours')}</div>
-              <div className="text-xs text-tg-hint">Island Adventures</div>
+              <div className="text-xs text-tg-hint">{t('island_adventures')}</div>
             </div>
           </motion.button>
         </div>
@@ -146,8 +146,8 @@ export default function HomePage() {
           <div className="flex items-center gap-3">
             <span className="text-4xl">🎁</span>
             <div>
-              <h3 className="font-bold">Get 5% Cashback!</h3>
-              <p className="text-sm opacity-90">On every booking. Invite friends & earn more!</p>
+              <h3 className="font-bold">{t('cashback_promo_title')}</h3>
+              <p className="text-sm opacity-90">{t('cashback_promo_description')}</p>
             </div>
           </div>
         </motion.div>

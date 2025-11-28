@@ -328,6 +328,7 @@ export const settingsApi = {
 // ==================
 
 export const authApi = {
+  // Telegram auth
   authenticate: async () => {
     const initData = WebApp.initData;
     if (!initData) {
@@ -337,6 +338,62 @@ export const authApi = {
     const { data } = await api.post<ApiResponse<{ user: User; token: string }>>('/auth/telegram', {
       init_data: initData,
     });
+    return data.data;
+  },
+
+  // Email auth
+  login: async (email: string, password: string) => {
+    const { data } = await api.post<ApiResponse<{ user: User; token: string; auth_method: string }>>('/auth/login', {
+      email,
+      password,
+    });
+    return data.data;
+  },
+
+  register: async (userData: {
+    email: string;
+    password: string;
+    first_name?: string;
+    last_name?: string;
+    phone?: string;
+    whatsapp?: string;
+  }) => {
+    const { data } = await api.post<ApiResponse<{ user: User; token: string; auth_method: string; requires_verification?: boolean }>>('/auth/register', userData);
+    return data.data;
+  },
+
+  verifyEmail: async (token: string) => {
+    const { data } = await api.post<ApiResponse<{ success: boolean }>>('/auth/verify-email', { token });
+    return data.data;
+  },
+
+  forgotPassword: async (email: string) => {
+    const { data } = await api.post<ApiResponse<{ success: boolean; message: string }>>('/auth/forgot-password', { email });
+    return data.data;
+  },
+
+  resetPassword: async (token: string, password: string) => {
+    const { data } = await api.post<ApiResponse<{ success: boolean }>>('/auth/reset-password', { token, password });
+    return data.data;
+  },
+
+  // Google auth
+  getGoogleUrl: async (redirectUri: string) => {
+    const { data } = await api.get<ApiResponse<{ url: string }>>(`/auth/google?redirect_uri=${encodeURIComponent(redirectUri)}`);
+    return data.data;
+  },
+
+  googleCallback: async (code: string, redirectUri: string) => {
+    const { data } = await api.post<ApiResponse<{ user: User; token: string; auth_method: string }>>('/auth/google/callback', {
+      code,
+      redirect_uri: redirectUri,
+    });
+    return data.data;
+  },
+
+  // Current user
+  me: async () => {
+    const { data } = await api.get<ApiResponse<{ user: User }>>('/auth/me');
     return data.data;
   },
 };

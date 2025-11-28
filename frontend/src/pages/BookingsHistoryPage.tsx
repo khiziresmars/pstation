@@ -67,11 +67,11 @@ export default function BookingsHistoryPage() {
       {!bookings.length ? (
         <EmptyState
           icon="📋"
-          title="No bookings yet"
-          message="Your booking history will appear here"
+          title={t('no_bookings_yet')}
+          message={t('booking_history_empty')}
           action={
             <button onClick={() => navigate('/')} className="btn-primary">
-              Book Now
+              {t('book_now')}
             </button>
           }
         />

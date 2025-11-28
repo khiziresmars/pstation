@@ -182,7 +182,7 @@ export default function BookingPage() {
             <h2 className="font-semibold text-tg-text mb-3">{t('select_time')}</h2>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-sm text-tg-hint">Start Time</label>
+                <label className="text-sm text-tg-hint">{t('start_time')}</label>
                 <select
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
@@ -323,7 +323,7 @@ export default function BookingPage() {
                   type="text"
                   value={promoCode}
                   onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-                  placeholder="Enter code"
+                  placeholder={t('enter_code')}
                   className="input flex-1"
                 />
                 <button
@@ -335,7 +335,7 @@ export default function BookingPage() {
               </div>
               {calculation?.promo && 'discount' in calculation.promo && (
                 <p className="text-sm text-green-600 mt-2">
-                  ✓ -{formatPrice(calculation.promo.discount)} discount applied!
+                  ✓ -{formatPrice(calculation.promo.discount)} {t('discount_applied')}
                 </p>
               )}
             </div>
@@ -377,7 +377,7 @@ export default function BookingPage() {
           <textarea
             value={specialRequests}
             onChange={(e) => setSpecialRequests(e.target.value)}
-            placeholder="Any special requirements..."
+            placeholder={t('special_requests_placeholder')}
             rows={3}
             className="input resize-none"
           />
@@ -386,7 +386,7 @@ export default function BookingPage() {
         {/* Price Summary */}
         {calculation && (
           <div className="card p-4">
-            <h2 className="font-semibold text-tg-text mb-3">Price Summary</h2>
+            <h2 className="font-semibold text-tg-text mb-3">{t('price_summary')}</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-tg-hint">{t('base_price')}</span>
