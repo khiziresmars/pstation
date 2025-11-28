@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk';
 import { useAppStore } from '@/store/appStore';
 import Layout from '@/components/Layout';
+import ErrorBoundary from '@/components/common/ErrorBoundary';
 import HomePage from '@/pages/HomePage';
 import VesselsPage from '@/pages/VesselsPage';
 import VesselDetailPage from '@/pages/VesselDetailPage';
@@ -13,6 +14,7 @@ import BookingConfirmPage from '@/pages/BookingConfirmPage';
 import ProfilePage from '@/pages/ProfilePage';
 import FavoritesPage from '@/pages/FavoritesPage';
 import BookingsHistoryPage from '@/pages/BookingsHistoryPage';
+import SearchPage from '@/pages/SearchPage';
 import { OfflineIndicator, UpdateNotification } from '@/components/common/OfflineIndicator';
 
 function App() {
@@ -66,24 +68,27 @@ function App() {
   }, [setUser, setTheme, setLanguage]);
 
   return (
-    <BrowserRouter>
-      <OfflineIndicator />
-      <UpdateNotification />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/vessels" element={<VesselsPage />} />
-          <Route path="/vessels/:slug" element={<VesselDetailPage />} />
-          <Route path="/tours" element={<ToursPage />} />
-          <Route path="/tours/:slug" element={<TourDetailPage />} />
-          <Route path="/booking/:type/:id" element={<BookingPage />} />
-          <Route path="/booking/confirm/:reference" element={<BookingConfirmPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/bookings" element={<BookingsHistoryPage />} />
-        </Routes>
-      </Layout>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <OfflineIndicator />
+        <UpdateNotification />
+        <Layout>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/vessels" element={<VesselsPage />} />
+            <Route path="/vessels/:slug" element={<VesselDetailPage />} />
+            <Route path="/tours" element={<ToursPage />} />
+            <Route path="/tours/:slug" element={<TourDetailPage />} />
+            <Route path="/booking/:type/:id" element={<BookingPage />} />
+            <Route path="/booking/confirm/:reference" element={<BookingConfirmPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/bookings" element={<BookingsHistoryPage />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

@@ -79,6 +79,16 @@ try {
     // Settings (public)
     $router->get('/api/settings', 'SettingsController@public');
 
+    // Search
+    $router->get('/api/search', 'SearchController@search');
+    $router->get('/api/search/suggestions', 'SearchController@suggestions');
+    $router->get('/api/search/popular', 'SearchController@popular');
+    $router->get('/api/search/vessels', 'SearchController@vessels');
+    $router->get('/api/search/tours', 'SearchController@tours');
+
+    // Error reporting endpoint
+    $router->post('/api/errors/report', 'ErrorController@report');
+
     // ===================
     // AUTHENTICATED ROUTES (Telegram Auth)
     // ===================
@@ -92,8 +102,11 @@ try {
     $router->delete('/api/user/favorites/{type}/{id}', 'UserController@removeFavorite', [AuthMiddleware::class]);
     $router->get('/api/user/cashback', 'UserController@cashbackHistory', [AuthMiddleware::class]);
     $router->get('/api/user/referrals', 'UserController@referrals', [AuthMiddleware::class]);
-    $router->get('/api/user/notifications', 'UserController@notifications', [AuthMiddleware::class]);
-    $router->put('/api/user/notifications/{id}/read', 'UserController@markNotificationRead', [AuthMiddleware::class]);
+    $router->get('/api/user/notifications', 'NotificationController@index', [AuthMiddleware::class]);
+    $router->get('/api/user/notifications/unread-count', 'NotificationController@unreadCount', [AuthMiddleware::class]);
+    $router->put('/api/user/notifications/read-all', 'NotificationController@markAllRead', [AuthMiddleware::class]);
+    $router->put('/api/user/notifications/{id}/read', 'NotificationController@markRead', [AuthMiddleware::class]);
+    $router->delete('/api/user/notifications/{id}', 'NotificationController@delete', [AuthMiddleware::class]);
 
     // Bookings
     $router->post('/api/bookings', 'BookingController@create', [AuthMiddleware::class]);
