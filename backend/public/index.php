@@ -185,6 +185,18 @@ try {
     // Bank Transfer
     $router->get('/api/payments/bank-transfer/{reference}', 'PaymentController@bankTransferDetails');
 
+    // PromptPay (Thai QR)
+    $router->post('/api/payments/promptpay/create', 'PaymentController@createPromptPay', [AuthMiddleware::class]);
+    $router->get('/api/payments/promptpay/pending', 'PaymentController@promptPayPending', [AdminAuthMiddleware::class]);
+    $router->post('/api/payments/promptpay/confirm', 'PaymentController@confirmPromptPay', [AdminAuthMiddleware::class]);
+
+    // YooKassa (Russian Payments)
+    $router->post('/api/payments/yookassa/create', 'PaymentController@createYooKassa', [AuthMiddleware::class]);
+    $router->get('/api/payments/yookassa/status/{payment_id}', 'PaymentController@yooKassaStatus');
+    $router->get('/api/payments/yookassa/methods', 'PaymentController@yooKassaMethods');
+    $router->post('/api/payments/yookassa/webhook', 'PaymentController@yooKassaWebhook');
+    $router->post('/api/payments/yookassa/refund', 'PaymentController@yooKassaRefund', [AdminAuthMiddleware::class]);
+
     // ===================
     // TELEGRAM WEBHOOK
     // ===================

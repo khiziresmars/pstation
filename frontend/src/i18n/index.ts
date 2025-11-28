@@ -231,6 +231,14 @@ const resources = {
       payment_success: 'Payment Successful!',
       payment_failed: 'Payment Failed',
 
+      // PromptPay & YooKassa
+      promptpay: 'PromptPay',
+      promptpay_desc: 'Thai QR Payment',
+      promptpay_scan: 'Scan QR code with your Thai banking app',
+      yookassa: 'YooKassa',
+      yookassa_desc: 'Russian Payment System',
+      yookassa_methods: 'Bank cards, YooMoney, SberPay, Qiwi',
+
       // ===========================================
       // PROFILE
       // ===========================================
@@ -248,6 +256,41 @@ const resources = {
       currency: 'Currency',
       logout: 'Log Out',
       share_referral_text: 'Book premium yachts & island tours in Phuket! Use my link to get started:',
+
+      // Profile tabs
+      profile_tab_overview: 'Overview',
+      profile_tab_bookings: 'Bookings',
+      profile_tab_settings: 'Settings',
+      profile_tab_about: 'About',
+      total_bookings: 'Total Bookings',
+      all_time: 'All time',
+      browse_catalog: 'Browse Catalog',
+
+      // Settings tab
+      notifications: 'Notifications',
+      booking_updates: 'Booking Updates',
+      booking_updates_desc: 'Get notified about your booking status',
+      promotions: 'Promotions',
+      promotions_desc: 'Receive special offers and discounts',
+      reminders: 'Reminders',
+      reminders_desc: 'Get reminded before your bookings',
+      security: 'Security',
+      change_password: 'Change Password',
+      current_password: 'Current Password',
+      new_password: 'New Password',
+      password_changed: 'Password changed successfully',
+      password_change_failed: 'Failed to change password',
+
+      // About tab
+      app_description: 'Phuket Station is your gateway to premium yacht charters and exciting island tours in the beautiful Andaman Sea.',
+      feature_yachts: 'Premium yacht and boat charters',
+      feature_tours: 'Exciting island tours and adventures',
+      feature_payments: 'Secure and flexible payment options',
+      feature_loyalty: 'Cashback rewards and referral program',
+      feature_languages: 'Multi-language support (EN/RU/TH)',
+      contact_us: 'Contact Us',
+      version: 'Version',
+      guest: 'Guest',
 
       // ===========================================
       // SEARCH
@@ -583,6 +626,14 @@ const resources = {
       payment_success: 'Оплата прошла успешно!',
       payment_failed: 'Ошибка оплаты',
 
+      // PromptPay & YooKassa
+      promptpay: 'PromptPay',
+      promptpay_desc: 'Тайский QR платёж',
+      promptpay_scan: 'Отсканируйте QR-код тайским банковским приложением',
+      yookassa: 'ЮКасса',
+      yookassa_desc: 'Российская платёжная система',
+      yookassa_methods: 'Банковские карты, ЮMoney, SberPay, Qiwi',
+
       // ===========================================
       // PROFILE
       // ===========================================
@@ -600,6 +651,41 @@ const resources = {
       currency: 'Валюта',
       logout: 'Выйти',
       share_referral_text: 'Бронируйте яхты и туры на Пхукете! Воспользуйтесь моей ссылкой:',
+
+      // Profile tabs
+      profile_tab_overview: 'Обзор',
+      profile_tab_bookings: 'Бронирования',
+      profile_tab_settings: 'Настройки',
+      profile_tab_about: 'О приложении',
+      total_bookings: 'Всего бронирований',
+      all_time: 'За всё время',
+      browse_catalog: 'Каталог',
+
+      // Settings tab
+      notifications: 'Уведомления',
+      booking_updates: 'Обновления бронирований',
+      booking_updates_desc: 'Получать уведомления о статусе бронирований',
+      promotions: 'Акции',
+      promotions_desc: 'Получать специальные предложения и скидки',
+      reminders: 'Напоминания',
+      reminders_desc: 'Получать напоминания перед бронированиями',
+      security: 'Безопасность',
+      change_password: 'Сменить пароль',
+      current_password: 'Текущий пароль',
+      new_password: 'Новый пароль',
+      password_changed: 'Пароль успешно изменён',
+      password_change_failed: 'Не удалось сменить пароль',
+
+      // About tab
+      app_description: 'Phuket Station — ваш путеводитель по премиальным яхтам и увлекательным островным турам в прекрасном Андаманском море.',
+      feature_yachts: 'Премиальная аренда яхт и катеров',
+      feature_tours: 'Увлекательные островные туры',
+      feature_payments: 'Безопасные и гибкие способы оплаты',
+      feature_loyalty: 'Кэшбэк и реферальная программа',
+      feature_languages: 'Поддержка языков (EN/RU/TH)',
+      contact_us: 'Связаться с нами',
+      version: 'Версия',
+      guest: 'Гость',
 
       // ===========================================
       // SEARCH
@@ -935,6 +1021,14 @@ const resources = {
       payment_success: 'ชำระเงินสำเร็จ!',
       payment_failed: 'การชำระเงินล้มเหลว',
 
+      // PromptPay & YooKassa
+      promptpay: 'พร้อมเพย์',
+      promptpay_desc: 'ชำระผ่าน QR Code',
+      promptpay_scan: 'สแกน QR Code ด้วยแอปธนาคารของคุณ',
+      yookassa: 'YooKassa',
+      yookassa_desc: 'ระบบชำระเงินรัสเซีย',
+      yookassa_methods: 'บัตรธนาคาร, YooMoney, SberPay, Qiwi',
+
       // ===========================================
       // PROFILE
       // ===========================================
@@ -952,6 +1046,41 @@ const resources = {
       currency: 'สกุลเงิน',
       logout: 'ออกจากระบบ',
       share_referral_text: 'จองเรือยอทช์และทัวร์ภูเก็ต! ใช้ลิงก์ของฉัน:',
+
+      // Profile tabs
+      profile_tab_overview: 'ภาพรวม',
+      profile_tab_bookings: 'การจอง',
+      profile_tab_settings: 'ตั้งค่า',
+      profile_tab_about: 'เกี่ยวกับ',
+      total_bookings: 'การจองทั้งหมด',
+      all_time: 'ทั้งหมด',
+      browse_catalog: 'ดูแคตตาล็อก',
+
+      // Settings tab
+      notifications: 'การแจ้งเตือน',
+      booking_updates: 'อัปเดตการจอง',
+      booking_updates_desc: 'รับการแจ้งเตือนเกี่ยวกับสถานะการจอง',
+      promotions: 'โปรโมชั่น',
+      promotions_desc: 'รับข้อเสนอพิเศษและส่วนลด',
+      reminders: 'การเตือนความจำ',
+      reminders_desc: 'รับการเตือนก่อนการจอง',
+      security: 'ความปลอดภัย',
+      change_password: 'เปลี่ยนรหัสผ่าน',
+      current_password: 'รหัสผ่านปัจจุบัน',
+      new_password: 'รหัสผ่านใหม่',
+      password_changed: 'เปลี่ยนรหัสผ่านสำเร็จ',
+      password_change_failed: 'เปลี่ยนรหัสผ่านไม่สำเร็จ',
+
+      // About tab
+      app_description: 'Phuket Station คือประตูสู่การเช่าเรือยอทช์พรีเมียมและทัวร์เกาะที่น่าตื่นเต้นในทะเลอันดามันอันสวยงาม',
+      feature_yachts: 'เช่าเรือยอทช์และเรือพรีเมียม',
+      feature_tours: 'ทัวร์เกาะและการผจญภัย',
+      feature_payments: 'ตัวเลือกการชำระเงินที่ปลอดภัย',
+      feature_loyalty: 'รางวัลเงินคืนและโปรแกรมแนะนำ',
+      feature_languages: 'รองรับหลายภาษา (EN/RU/TH)',
+      contact_us: 'ติดต่อเรา',
+      version: 'เวอร์ชัน',
+      guest: 'ผู้เยี่ยมชม',
 
       // ===========================================
       // SEARCH

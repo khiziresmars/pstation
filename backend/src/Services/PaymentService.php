@@ -49,12 +49,14 @@ class PaymentService
      */
     public function getMethods(): array
     {
-        return [
+        $methods = [
             [
                 'id' => 'card',
                 'name' => 'Credit/Debit Card',
+                'name_ru' => 'Банковская карта',
+                'name_th' => 'บัตรเครดิต/เดบิต',
                 'type' => 'card',
-                'icon' => '💳',
+                'icon' => 'card',
                 'enabled' => !empty($this->config['stripe']['secret_key']),
                 'min_amount' => 100,
                 'max_amount' => 1000000,
@@ -63,8 +65,10 @@ class PaymentService
             [
                 'id' => 'crypto',
                 'name' => 'Cryptocurrency',
+                'name_ru' => 'Криптовалюта',
+                'name_th' => 'สกุลเงินดิจิทัล',
                 'type' => 'crypto',
-                'icon' => '₿',
+                'icon' => 'crypto',
                 'enabled' => !empty($this->config['nowpayments']['api_key']),
                 'min_amount' => 500,
                 'max_amount' => 5000000,
@@ -73,14 +77,30 @@ class PaymentService
             [
                 'id' => 'telegram_stars',
                 'name' => 'Telegram Stars',
+                'name_ru' => 'Telegram Stars',
+                'name_th' => 'Telegram Stars',
                 'type' => 'telegram_stars',
-                'icon' => '⭐',
+                'icon' => 'stars',
                 'enabled' => !empty($this->botToken),
                 'min_amount' => 100,
                 'max_amount' => 500000,
                 'fee_percent' => 0,
             ],
         ];
+
+        // Add PromptPay if enabled
+        $promptPayService = new PromptPayService();
+        if ($promptPayService->isEnabled()) {
+            $methods[] = $promptPayService->getMethodInfo();
+        }
+
+        // Add YooKassa if enabled
+        $yooKassaService = new YooKassaService();
+        if ($yooKassaService->isEnabled()) {
+            $methods[] = $yooKassaService->getMethodInfo();
+        }
+
+        return $methods;
     }
 
     // ==========================================
