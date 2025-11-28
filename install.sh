@@ -81,6 +81,12 @@ configure() {
     read -p "Enter installation directory [$INSTALL_DIR]: " input
     INSTALL_DIR="${input:-$INSTALL_DIR}"
 
+    # Ensure INSTALL_DIR is an absolute path
+    if [[ ! "$INSTALL_DIR" = /* ]]; then
+        INSTALL_DIR="$(pwd)/$INSTALL_DIR"
+        print_warn "Converted to absolute path: $INSTALL_DIR"
+    fi
+
     echo ""
     print_msg "Configuration summary:"
     echo "  Domain: $DOMAIN"
@@ -215,6 +221,18 @@ clone_repo() {
 
     git clone "$REPO_URL" "$INSTALL_DIR"
 
+    # Verify clone was successful
+    if [[ ! -d "$INSTALL_DIR/frontend" ]]; then
+        print_error "Failed to clone repository or repository structure is incorrect"
+        print_error "Expected directory not found: $INSTALL_DIR/frontend"
+        exit 1
+    fi
+
+    if [[ ! -d "$INSTALL_DIR/backend" ]]; then
+        print_error "Backend directory not found: $INSTALL_DIR/backend"
+        exit 1
+    fi
+
     print_msg "Repository cloned to $INSTALL_DIR"
 }
 
@@ -222,7 +240,12 @@ clone_repo() {
 setup_backend() {
     print_header "Setting Up Backend"
 
-    cd "$INSTALL_DIR/backend"
+    if [[ ! -d "$INSTALL_DIR/backend" ]]; then
+        print_error "Backend directory not found: $INSTALL_DIR/backend"
+        exit 1
+    fi
+
+    cd "$INSTALL_DIR/backend" || { print_error "Failed to enter backend directory"; exit 1; }
 
     # Install dependencies
     composer install --no-dev --optimize-autoloader
@@ -305,7 +328,12 @@ EOF
 setup_frontend() {
     print_header "Setting Up Frontend"
 
-    cd "$INSTALL_DIR/frontend"
+    if [[ ! -d "$INSTALL_DIR/frontend" ]]; then
+        print_error "Frontend directory not found: $INSTALL_DIR/frontend"
+        exit 1
+    fi
+
+    cd "$INSTALL_DIR/frontend" || { print_error "Failed to enter frontend directory"; exit 1; }
 
     # Create .env file
     cat > .env <<EOF
@@ -331,7 +359,12 @@ EOF
 setup_admin() {
     print_header "Setting Up Admin Panel"
 
-    cd "$INSTALL_DIR/admin"
+    if [[ ! -d "$INSTALL_DIR/admin" ]]; then
+        print_error "Admin directory not found: $INSTALL_DIR/admin"
+        exit 1
+    fi
+
+    cd "$INSTALL_DIR/admin" || { print_error "Failed to enter admin directory"; exit 1; }
 
     # Create .env file
     cat > .env <<EOF
@@ -354,7 +387,7 @@ EOF
 run_migrations() {
     print_header "Running Database Migrations"
 
-    cd "$INSTALL_DIR/backend"
+    cd "$INSTALL_DIR/backend" || { print_error "Failed to enter backend directory"; exit 1; }
 
     # Run migrations
     php database/migrate.php
