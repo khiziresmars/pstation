@@ -1,8 +1,9 @@
-# 🚤 Phuket Yacht & Tours | Станция Пхукет
+# 🚤 Phuket Station | Станция Пхукет
 
-[![PHP Version](https://img.shields.io/badge/PHP-8.2+-blue.svg)](https://php.net)
+[![PHP Version](https://img.shields.io/badge/PHP-8.3+-blue.svg)](https://php.net)
 [![React](https://img.shields.io/badge/React-18-61dafb.svg)](https://reactjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6.svg)](https://typescriptlang.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178c6.svg)](https://typescriptlang.org)
+[![Telegram Mini App](https://img.shields.io/badge/Telegram-Mini%20App-0088cc.svg)](https://core.telegram.org/bots/webapps)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 Premium yacht and boat rental platform with tour booking for Phuket island. Built as a Telegram Mini App with web expansion capability.
@@ -11,7 +12,36 @@ Premium yacht and boat rental platform with tour booking for Phuket island. Buil
 
 ---
 
-## 📸 Screenshots / Скриншоты
+## 🚀 Quick Start | Быстрый старт
+
+### One-Line Installation (Ubuntu 24.04)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/khiziresmars/pstation/main/install.sh | sudo bash
+```
+
+Or manually:
+
+```bash
+git clone https://github.com/khiziresmars/pstation.git
+cd pstation
+sudo chmod +x install.sh
+sudo ./install.sh
+```
+
+The installer will guide you through:
+- System packages installation (PHP 8.3, MySQL 8.0, Redis, Nginx)
+- Database setup and migrations
+- Frontend build
+- SSL certificate generation (Certbot)
+- Nginx configuration
+- Cron jobs for scheduled tasks
+
+📖 **[Detailed Installation Guide](INSTALL.md)**
+
+---
+
+## 📸 Screenshots | Скриншоты
 
 <p align="center">
   <img src="docs/screenshots/home.png" alt="Home" width="200"/>
@@ -22,108 +52,130 @@ Premium yacht and boat rental platform with tour booking for Phuket island. Buil
 
 ---
 
-## 🛥️ Features / Возможности
+## 🛥️ Features | Возможности
 
 ### EN
 - **Yacht & Boat Catalog** — Filter by type, capacity, price with beautiful galleries
 - **Tour Booking** — Phi Phi Islands, James Bond Island, Similan and more
 - **Smart Booking System** — Date/time selection, guest count, instant pricing
-- **Telegram Stars Payment** — Native Telegram payment integration
+- **Multi-Payment Support** — Telegram Stars, Stripe, Crypto (NowPayments)
 - **Multi-currency** — THB, USD, EUR, RUB with live exchange rates
+- **Multi-Auth** — Telegram, Email/Password, Google OAuth
 - **Loyalty Program** — 5% cashback, referral bonuses, promo codes
-- **Multilingual** — English, Russian, Thai
+- **Gift Cards** — Purchase and redeem gift certificates
+- **Multilingual** — English, Russian, Thai (i18next)
 - **User Profile** — Booking history, favorites, cashback balance
+- **Admin Panel** — Full management dashboard
+- **Vendor Portal** — Partner management system
 
 ### RU
 - **Каталог яхт и катеров** — Фильтры по типу, вместимости, цене с галереями
 - **Бронирование туров** — Острова Пхи-Пхи, Джеймс Бонд, Симиланы и другие
 - **Умная система бронирования** — Выбор даты/времени, количество гостей, мгновенный расчёт
-- **Оплата Telegram Stars** — Нативная интеграция платежей Telegram
+- **Мульти-платежи** — Telegram Stars, Stripe, Криптовалюта (NowPayments)
 - **Мультивалютность** — THB, USD, EUR, RUB с актуальными курсами
+- **Мульти-авторизация** — Telegram, Email/Пароль, Google OAuth
 - **Программа лояльности** — 5% кэшбэк, реферальные бонусы, промокоды
-- **Мультиязычность** — Английский, Русский, Тайский
+- **Подарочные карты** — Покупка и использование сертификатов
+- **Мультиязычность** — Английский, Русский, Тайский (i18next)
 - **Профиль пользователя** — История бронирований, избранное, баланс кэшбэка
+- **Админ-панель** — Полная панель управления
+- **Портал партнёров** — Система управления вендорами
 
 ---
 
-## 🔧 Tech Stack / Технологии
+## 🔧 Tech Stack | Технологии
 
 ### Backend
-- PHP 8.2+ (Clean architecture with Router)
-- MySQL 8.0
-- REST API
+- PHP 8.3+ (Clean MVC architecture)
+- MySQL 8.0 with migrations system
+- Redis (caching & sessions)
+- REST API (169+ endpoints)
+- SMTP Email Service
 - Telegram Bot API integration
 
 ### Frontend
 - React 18 + TypeScript (strict mode)
-- Vite 5
-- Tailwind CSS
-- Telegram Web App SDK (@twa-dev/sdk)
+- Vite 5 (fast builds)
+- Tailwind CSS (with Telegram theme variables)
+- Telegram Web App SDK (@twa-dev/sdk v7.8.0)
 - Zustand (state management)
-- React Query (data fetching)
+- TanStack React Query (data fetching)
+- Framer Motion (animations)
 - Swiper (galleries)
+- i18next (localization)
 
 ### Infrastructure
 - Ubuntu 24.04 LTS
-- Nginx
-- Certbot (SSL)
+- Nginx (optimized config)
+- Certbot (auto SSL)
+- Cron (scheduled tasks)
 
 ---
 
-## 📋 Requirements / Требования
+## 📋 Requirements | Требования
 
 - **OS**: Ubuntu 24.04 LTS
 - **RAM**: 2GB minimum (4GB recommended)
-- **PHP**: 8.2+
+- **PHP**: 8.3+
 - **MySQL**: 8.0+
 - **Node.js**: 20 LTS
-- **Domain**: With SSL certificate
+- **Domain**: With DNS pointed to server IP
 
 ---
 
-## 🚀 Quick Start / Быстрый старт
+## 📁 Project Structure | Структура проекта
 
-### 1. Clone repository
-```bash
-git clone https://github.com/your-repo/phuket-yacht-tours.git
-cd phuket-yacht-tours
 ```
-
-### 2. Database setup
-```bash
-mysql -u root -p < database/schema.sql
-mysql -u root -p phuket_yachts < database/seed.sql
+pstation/
+├── README.md
+├── INSTALL.md
+├── install.sh               # Automated installer
+├── backend/
+│   ├── composer.json
+│   ├── public/index.php     # API entry point
+│   ├── src/
+│   │   ├── Controllers/     # API controllers
+│   │   ├── Core/            # Framework core
+│   │   ├── Middleware/      # Auth, CORS, etc.
+│   │   └── Services/        # Business logic
+│   ├── database/
+│   │   ├── migrations/      # Database migrations
+│   │   ├── migrate.php      # Migration runner
+│   │   └── seed.php         # Data seeder
+│   ├── scripts/             # Cron scripts
+│   │   ├── update-exchange-rates.php
+│   │   ├── send-reminders.php
+│   │   ├── cleanup.php
+│   │   └── queue-worker.php
+│   ├── storage/
+│   │   ├── logs/
+│   │   └── cache/
+│   └── .env.example
+├── frontend/
+│   ├── package.json
+│   ├── vite.config.ts
+│   ├── tailwind.config.js
+│   ├── src/
+│   │   ├── components/      # UI components
+│   │   ├── pages/           # Route pages
+│   │   ├── hooks/           # Custom hooks
+│   │   ├── services/        # API services
+│   │   ├── store/           # Zustand stores
+│   │   ├── i18n/            # Translations
+│   │   └── types/           # TypeScript types
+│   └── .env.example
+├── admin/                   # Admin panel
+├── nginx/
+│   └── site.conf            # Nginx config template
+└── docs/
+    ├── API.md
+    └── TELEGRAM_SETUP.md
 ```
-
-### 3. Backend setup
-```bash
-cd backend
-cp .env.example .env
-# Edit .env with your credentials
-composer install
-```
-
-### 4. Frontend setup
-```bash
-cd frontend
-cp .env.example .env
-# Edit .env with your API URL
-npm install
-npm run build
-```
-
-### 5. Nginx configuration
-```bash
-sudo cp nginx/site.conf /etc/nginx/sites-available/phuket-yachts
-sudo ln -s /etc/nginx/sites-available/phuket-yachts /etc/nginx/sites-enabled/
-sudo nginx -t && sudo systemctl reload nginx
-```
-
-📖 **[Detailed Installation Guide](INSTALLATION.md)**
 
 ---
 
-## 📡 API Documentation / API Документация
+## 📡 API Documentation | API Документация
 
 ### Base URL
 ```
@@ -134,124 +186,152 @@ https://your-domain.com/api
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
+| POST | `/auth/telegram` | Authenticate via Telegram |
+| POST | `/auth/register` | Email registration |
+| POST | `/auth/login` | Email login |
 | GET | `/vessels` | Get all vessels with filters |
-| GET | `/vessels/{id}` | Get vessel details |
+| GET | `/vessels/{slug}` | Get vessel details |
 | GET | `/tours` | Get all tours |
-| GET | `/tours/{id}` | Get tour details |
+| GET | `/tours/{slug}` | Get tour details |
 | POST | `/bookings` | Create booking |
-| GET | `/bookings/{id}` | Get booking details |
+| GET | `/bookings/{reference}` | Get booking details |
+| POST | `/payments/stripe/intent` | Create Stripe payment |
+| POST | `/payments/crypto/create` | Create crypto payment |
 | GET | `/user/profile` | Get user profile |
 | GET | `/user/bookings` | Get user bookings |
+| GET | `/user/favorites` | Get user favorites |
 | POST | `/promo/validate` | Validate promo code |
 | GET | `/exchange-rates` | Get exchange rates |
+| GET | `/gift-cards` | Get gift cards catalog |
 
 ### Authentication
-All authenticated endpoints require Telegram `initData` in header:
+Telegram Mini App authentication:
 ```
 Authorization: tma {initData}
+```
+
+JWT Token authentication:
+```
+Authorization: Bearer {token}
 ```
 
 📖 **[Full API Documentation](docs/API.md)**
 
 ---
 
-## 🤖 Telegram Setup / Настройка Telegram
+## 🤖 Telegram Setup | Настройка Telegram
 
 1. Create bot via [@BotFather](https://t.me/BotFather)
-2. Enable inline mode and payments
-3. Create Mini App via Bot Settings
-4. Configure webhook URL
-5. Set up Telegram Stars payments
+2. Get bot token and save it
+3. Enable inline mode and payments
+4. Create Mini App via Bot Settings → Menu Button
+5. Set webhook URL: `https://your-domain.com/api/telegram/webhook`
+6. Configure Telegram Stars payments (optional)
 
 📖 **[Telegram Setup Guide](docs/TELEGRAM_SETUP.md)**
 
 ---
 
-## 📁 Project Structure / Структура проекта
-
-```
-phuket-yacht-tours/
-├── README.md
-├── INSTALLATION.md
-├── docker-compose.yml
-├── backend/
-│   ├── composer.json
-│   ├── public/index.php
-│   ├── src/
-│   │   ├── Controllers/
-│   │   ├── Models/
-│   │   ├── Services/
-│   │   └── Middleware/
-│   ├── config/
-│   └── .env.example
-├── frontend/
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   ├── store/
-│   │   └── types/
-│   └── .env.example
-├── database/
-│   ├── schema.sql
-│   ├── seed.sql
-│   └── migrations/
-├── nginx/
-│   └── site.conf
-├── public/
-│   └── images/
-└── docs/
-    ├── API.md
-    └── TELEGRAM_SETUP.md
-```
-
----
-
-## 🌍 Environment Variables / Переменные окружения
+## 🌍 Environment Variables | Переменные окружения
 
 ### Backend (.env)
 ```env
+# Application
+APP_NAME="Phuket Station"
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://your-domain.com
+
+# Database
 DB_HOST=localhost
-DB_NAME=phuket_yachts
-DB_USER=phuket_user
-DB_PASSWORD=your_password
+DB_PORT=3306
+DB_DATABASE=phuket_station
+DB_USERNAME=phuket_user
+DB_PASSWORD=your_secure_password
 
+# Telegram
 TELEGRAM_BOT_TOKEN=your_bot_token
-TELEGRAM_PAYMENT_TOKEN=your_payment_token
+TELEGRAM_WEBAPP_URL=https://your-domain.com
 
-CASHBACK_PERCENT=5
-REFERRAL_BONUS_THB=200
+# JWT
+JWT_SECRET=your_random_64_char_string
+
+# Email
+MAIL_ENABLED=true
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_USERNAME=your_email
+MAIL_PASSWORD=your_password
+MAIL_FROM_ADDRESS=noreply@phuket-station.com
+MAIL_FROM_NAME="Phuket Station"
+
+# Payments (optional)
+STRIPE_SECRET_KEY=sk_live_xxx
+STRIPE_PUBLISHABLE_KEY=pk_live_xxx
+NOWPAYMENTS_API_KEY=xxx
+
+# Google OAuth (optional)
+GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=xxx
 ```
 
 ### Frontend (.env)
 ```env
 VITE_API_URL=https://your-domain.com/api
-VITE_TELEGRAM_BOT_USERNAME=your_bot_username
+VITE_APP_NAME=Phuket Station
+VITE_TELEGRAM_BOT_USERNAME=YourBotUsername
 ```
 
 ---
 
-## 🔒 Security / Безопасность
+## 🔒 Security | Безопасность
 
-- Telegram initData validation on every request
+- Telegram initData validation (HMAC-SHA256)
+- JWT token authentication with expiration
 - SQL injection protection (PDO prepared statements)
 - XSS protection (Content Security Policy)
 - CORS configuration
 - Rate limiting
-- HTTPS only
+- HTTPS enforced
+- Password hashing (bcrypt)
+- Input validation and sanitization
 
 ---
 
-## 📄 License / Лицензия
+## 📊 Database
+
+29 tables including:
+- `users` - User accounts with multi-auth support
+- `vessels` - Yachts and boats catalog
+- `tours` - Tours catalog
+- `bookings` - Booking records
+- `payments` - Payment transactions
+- `promo_codes` - Promotional codes
+- `gift_cards` - Gift certificates
+- `exchange_rates` - Currency rates
+- `vendors` - Partner vendors
+- `notification_log` - Email/notification logs
+- And more...
+
+---
+
+## ⏰ Scheduled Tasks | Планировщик
+
+Automated cron jobs:
+- **Every 6 hours**: Exchange rates update
+- **Daily 8:00 AM**: Booking reminders
+- **Daily 3:00 AM**: Cleanup (expired tokens, old logs)
+- **Continuous**: Background queue worker
+
+---
+
+## 📄 License | Лицензия
 
 MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🤝 Contributing / Участие в разработке
+## 🤝 Contributing | Участие в разработке
 
 1. Fork the repository
 2. Create feature branch (`git checkout -b feature/amazing`)
@@ -261,11 +341,11 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📞 Support / Поддержка
+## 📞 Support | Поддержка
 
-- **Telegram**: [@phuket_yacht_support](https://t.me/phuket_yacht_support)
-- **Email**: support@phuket-yachts.com
-- **Issues**: [GitHub Issues](https://github.com/your-repo/phuket-yacht-tours/issues)
+- **Telegram**: [@phuket_station_support](https://t.me/phuket_station_support)
+- **Email**: support@phuket-station.com
+- **Issues**: [GitHub Issues](https://github.com/khiziresmars/pstation/issues)
 
 ---
 
