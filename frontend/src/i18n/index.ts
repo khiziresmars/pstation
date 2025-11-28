@@ -1,0 +1,285 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+const resources = {
+  en: {
+    translation: {
+      // Navigation
+      home: 'Home',
+      vessels: 'Yachts & Boats',
+      tours: 'Tours',
+      profile: 'Profile',
+      favorites: 'Favorites',
+      bookings: 'My Bookings',
+
+      // Home page
+      welcome: 'Welcome to Phuket',
+      tagline: 'Premium Yachts & Island Tours',
+      featured_vessels: 'Featured Yachts',
+      featured_tours: 'Popular Tours',
+      view_all: 'View All',
+
+      // Vessels
+      yacht: 'Yacht',
+      speedboat: 'Speedboat',
+      catamaran: 'Catamaran',
+      sailboat: 'Sailboat',
+      capacity: 'Capacity',
+      guests: 'guests',
+      length: 'Length',
+      per_hour: '/hour',
+      per_day: '/day',
+      from: 'From',
+      captain_included: 'Captain Included',
+      fuel_included: 'Fuel Included',
+      features: 'Features',
+      amenities: 'Amenities',
+      reviews: 'Reviews',
+
+      // Tours
+      duration: 'Duration',
+      hours: 'hours',
+      departure: 'Departure',
+      includes: "What's Included",
+      excludes: 'Not Included',
+      itinerary: 'Itinerary',
+      highlights: 'Highlights',
+      meeting_point: 'Meeting Point',
+      adult: 'Adult',
+      child: 'Child',
+      pickup_available: 'Hotel Pickup Available',
+
+      // Booking
+      book_now: 'Book Now',
+      select_date: 'Select Date',
+      select_time: 'Select Time',
+      rental_hours: 'Rental Duration',
+      number_of_guests: 'Number of Guests',
+      adults: 'Adults',
+      children: 'Children',
+      extras: 'Additional Services',
+      promo_code: 'Promo Code',
+      apply: 'Apply',
+      use_cashback: 'Use Cashback',
+      available_cashback: 'Available',
+      special_requests: 'Special Requests',
+      continue: 'Continue',
+      confirm_booking: 'Confirm Booking',
+      total: 'Total',
+      subtotal: 'Subtotal',
+      discount: 'Discount',
+      cashback_earned: 'Cashback to Earn',
+
+      // Payment
+      pay_with_stars: 'Pay with Telegram Stars',
+      bank_transfer: 'Bank Transfer',
+      payment_pending: 'Payment Pending',
+      payment_success: 'Payment Successful!',
+
+      // Profile
+      cashback_balance: 'Cashback Balance',
+      referral_program: 'Referral Program',
+      invite_friends: 'Invite Friends',
+      your_referral_link: 'Your Referral Link',
+      copy_link: 'Copy Link',
+      copied: 'Copied!',
+      total_referrals: 'Total Referrals',
+      total_earned: 'Total Earned',
+      settings: 'Settings',
+      language: 'Language',
+      currency: 'Currency',
+      logout: 'Log Out',
+
+      // Status
+      pending: 'Pending',
+      confirmed: 'Confirmed',
+      paid: 'Paid',
+      completed: 'Completed',
+      cancelled: 'Cancelled',
+
+      // Common
+      loading: 'Loading...',
+      error: 'Something went wrong',
+      retry: 'Retry',
+      no_results: 'No results found',
+      back: 'Back',
+      close: 'Close',
+      save: 'Save',
+      cancel: 'Cancel',
+      filter: 'Filter',
+      sort: 'Sort',
+      clear: 'Clear',
+      search: 'Search',
+      rating: 'Rating',
+      date: 'Date',
+      time: 'Time',
+      price: 'Price',
+    },
+  },
+  ru: {
+    translation: {
+      // Navigation
+      home: 'Главная',
+      vessels: 'Яхты и Катера',
+      tours: 'Туры',
+      profile: 'Профиль',
+      favorites: 'Избранное',
+      bookings: 'Мои Бронирования',
+
+      // Home page
+      welcome: 'Добро пожаловать на Пхукет',
+      tagline: 'Премиальные Яхты и Островные Туры',
+      featured_vessels: 'Популярные Яхты',
+      featured_tours: 'Популярные Туры',
+      view_all: 'Смотреть все',
+
+      // Vessels
+      yacht: 'Яхта',
+      speedboat: 'Катер',
+      catamaran: 'Катамаран',
+      sailboat: 'Парусная яхта',
+      capacity: 'Вместимость',
+      guests: 'гостей',
+      length: 'Длина',
+      per_hour: '/час',
+      per_day: '/день',
+      from: 'От',
+      captain_included: 'Капитан включён',
+      fuel_included: 'Топливо включено',
+      features: 'Особенности',
+      amenities: 'Удобства',
+      reviews: 'Отзывы',
+
+      // Tours
+      duration: 'Длительность',
+      hours: 'часов',
+      departure: 'Отправление',
+      includes: 'Включено',
+      excludes: 'Не включено',
+      itinerary: 'Маршрут',
+      highlights: 'Основные моменты',
+      meeting_point: 'Место встречи',
+      adult: 'Взрослый',
+      child: 'Ребёнок',
+      pickup_available: 'Трансфер из отеля',
+
+      // Booking
+      book_now: 'Забронировать',
+      select_date: 'Выберите дату',
+      select_time: 'Выберите время',
+      rental_hours: 'Продолжительность аренды',
+      number_of_guests: 'Количество гостей',
+      adults: 'Взрослые',
+      children: 'Дети',
+      extras: 'Дополнительные услуги',
+      promo_code: 'Промокод',
+      apply: 'Применить',
+      use_cashback: 'Использовать кэшбэк',
+      available_cashback: 'Доступно',
+      special_requests: 'Особые пожелания',
+      continue: 'Продолжить',
+      confirm_booking: 'Подтвердить бронирование',
+      total: 'Итого',
+      subtotal: 'Подитог',
+      discount: 'Скидка',
+      cashback_earned: 'Кэшбэк за заказ',
+
+      // Payment
+      pay_with_stars: 'Оплатить Telegram Stars',
+      bank_transfer: 'Банковский перевод',
+      payment_pending: 'Ожидание оплаты',
+      payment_success: 'Оплата прошла успешно!',
+
+      // Profile
+      cashback_balance: 'Баланс кэшбэка',
+      referral_program: 'Реферальная программа',
+      invite_friends: 'Пригласить друзей',
+      your_referral_link: 'Ваша реферальная ссылка',
+      copy_link: 'Скопировать',
+      copied: 'Скопировано!',
+      total_referrals: 'Всего рефералов',
+      total_earned: 'Всего заработано',
+      settings: 'Настройки',
+      language: 'Язык',
+      currency: 'Валюта',
+      logout: 'Выйти',
+
+      // Status
+      pending: 'Ожидание',
+      confirmed: 'Подтверждено',
+      paid: 'Оплачено',
+      completed: 'Завершено',
+      cancelled: 'Отменено',
+
+      // Common
+      loading: 'Загрузка...',
+      error: 'Что-то пошло не так',
+      retry: 'Повторить',
+      no_results: 'Ничего не найдено',
+      back: 'Назад',
+      close: 'Закрыть',
+      save: 'Сохранить',
+      cancel: 'Отмена',
+      filter: 'Фильтр',
+      sort: 'Сортировка',
+      clear: 'Очистить',
+      search: 'Поиск',
+      rating: 'Рейтинг',
+      date: 'Дата',
+      time: 'Время',
+      price: 'Цена',
+    },
+  },
+  th: {
+    translation: {
+      // Navigation
+      home: 'หน้าแรก',
+      vessels: 'เรือยอทช์และเรือ',
+      tours: 'ทัวร์',
+      profile: 'โปรไฟล์',
+      favorites: 'รายการโปรด',
+      bookings: 'การจองของฉัน',
+
+      // Home page
+      welcome: 'ยินดีต้อนรับสู่ภูเก็ต',
+      tagline: 'เรือยอทช์พรีเมียมและทัวร์เกาะ',
+      featured_vessels: 'เรือยอทช์แนะนำ',
+      featured_tours: 'ทัวร์ยอดนิยม',
+      view_all: 'ดูทั้งหมด',
+
+      // Vessels
+      yacht: 'เรือยอทช์',
+      speedboat: 'สปีดโบ๊ท',
+      catamaran: 'คาตามารัน',
+      sailboat: 'เรือใบ',
+      capacity: 'ความจุ',
+      guests: 'ผู้โดยสาร',
+      length: 'ความยาว',
+      per_hour: '/ชั่วโมง',
+      per_day: '/วัน',
+      from: 'เริ่มต้น',
+      captain_included: 'รวมกัปตัน',
+      fuel_included: 'รวมน้ำมัน',
+      features: 'คุณสมบัติ',
+      amenities: 'สิ่งอำนวยความสะดวก',
+      reviews: 'รีวิว',
+
+      // Common
+      loading: 'กำลังโหลด...',
+      book_now: 'จองเลย',
+      total: 'รวม',
+      back: 'กลับ',
+    },
+  },
+};
+
+i18n.use(initReactI18next).init({
+  resources,
+  lng: 'en',
+  fallbackLng: 'en',
+  interpolation: {
+    escapeValue: false,
+  },
+});
+
+export default i18n;
