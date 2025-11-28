@@ -235,9 +235,13 @@ const resources = {
       promptpay: 'PromptPay',
       promptpay_desc: 'Thai QR Payment',
       promptpay_scan: 'Scan QR code with your Thai banking app',
+      promptpay_note: 'After payment, please wait for confirmation. Processing may take up to 15 minutes.',
       yookassa: 'YooKassa',
       yookassa_desc: 'Russian Payment System',
       yookassa_methods: 'Bank cards, YooMoney, SberPay, Qiwi',
+      amount_to_pay: 'Amount to Pay',
+      recipient: 'Recipient',
+      payment_will_be_confirmed_manually: 'Payment will be confirmed after verification',
 
       // ===========================================
       // PROFILE
@@ -630,9 +634,13 @@ const resources = {
       promptpay: 'PromptPay',
       promptpay_desc: 'Тайский QR платёж',
       promptpay_scan: 'Отсканируйте QR-код тайским банковским приложением',
+      promptpay_note: 'После оплаты дождитесь подтверждения. Обработка может занять до 15 минут.',
       yookassa: 'ЮКасса',
       yookassa_desc: 'Российская платёжная система',
       yookassa_methods: 'Банковские карты, ЮMoney, SberPay, Qiwi',
+      amount_to_pay: 'Сумма к оплате',
+      recipient: 'Получатель',
+      payment_will_be_confirmed_manually: 'Оплата будет подтверждена после проверки',
 
       // ===========================================
       // PROFILE
@@ -1025,9 +1033,13 @@ const resources = {
       promptpay: 'พร้อมเพย์',
       promptpay_desc: 'ชำระผ่าน QR Code',
       promptpay_scan: 'สแกน QR Code ด้วยแอปธนาคารของคุณ',
+      promptpay_note: 'หลังชำระเงินแล้วกรุณารอการยืนยัน การประมวลผลอาจใช้เวลาถึง 15 นาที',
       yookassa: 'YooKassa',
       yookassa_desc: 'ระบบชำระเงินรัสเซีย',
       yookassa_methods: 'บัตรธนาคาร, YooMoney, SberPay, Qiwi',
+      amount_to_pay: 'จำนวนเงินที่ต้องชำระ',
+      recipient: 'ผู้รับเงิน',
+      payment_will_be_confirmed_manually: 'การชำระเงินจะได้รับการยืนยันหลังจากตรวจสอบ',
 
       // ===========================================
       // PROFILE

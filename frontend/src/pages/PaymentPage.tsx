@@ -17,18 +17,19 @@ const CRYPTO_CURRENCIES = [
   { id: 'trx', name: 'Tron', symbol: 'TRX', icon: '◈', color: '#FF0013' },
 ];
 
-type PaymentMethod = 'card' | 'crypto' | 'telegram_stars';
+type PaymentMethod = 'card' | 'crypto' | 'telegram_stars' | 'promptpay' | 'yookassa';
 
 export default function PaymentPage() {
   const { reference } = useParams<{ reference: string }>();
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { formatPrice } = usePrice();
   const { hapticImpact, hapticNotification, showBackButton, hideBackButton, showMainButton, hideMainButton } = useTelegram();
 
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [selectedCrypto, setSelectedCrypto] = useState('btc');
   const [cryptoPayment, setCryptoPayment] = useState<any>(null);
+  const [promptPayPayment, setPromptPayPayment] = useState<any>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
   // Fetch booking details
@@ -95,6 +96,34 @@ export default function PaymentPage() {
     },
   });
 
+  // PromptPay mutation
+  const promptPayMutation = useMutation({
+    mutationFn: () => paymentsApi.createPromptPay(reference!),
+    onSuccess: (data) => {
+      setPromptPayPayment(data);
+      hapticNotification('success');
+      setIsProcessing(false);
+    },
+    onError: () => {
+      hapticNotification('error');
+      setIsProcessing(false);
+    },
+  });
+
+  // YooKassa mutation
+  const yooKassaMutation = useMutation({
+    mutationFn: () => paymentsApi.createYooKassa(reference!),
+    onSuccess: (data) => {
+      if (data.confirmation_url) {
+        window.location.href = data.confirmation_url;
+      }
+    },
+    onError: () => {
+      hapticNotification('error');
+      setIsProcessing(false);
+    },
+  });
+
   // Check crypto payment status
   const { data: cryptoStatus, refetch: recheckCryptoStatus } = useQuery({
     queryKey: ['crypto-status', cryptoPayment?.payment_id],
@@ -114,6 +143,8 @@ export default function PaymentPage() {
     showBackButton(() => {
       if (cryptoPayment) {
         setCryptoPayment(null);
+      } else if (promptPayPayment) {
+        setPromptPayPayment(null);
       } else {
         hideBackButton();
         navigate(-1);
@@ -124,7 +155,7 @@ export default function PaymentPage() {
       hideBackButton();
       hideMainButton();
     };
-  }, [cryptoPayment, showBackButton, hideBackButton, hideMainButton, navigate]);
+  }, [cryptoPayment, promptPayPayment, showBackButton, hideBackButton, hideMainButton, navigate]);
 
   const handlePayment = () => {
     if (!selectedMethod) return;
@@ -141,6 +172,12 @@ export default function PaymentPage() {
         break;
       case 'telegram_stars':
         starsMutation.mutate();
+        break;
+      case 'promptpay':
+        promptPayMutation.mutate();
+        break;
+      case 'yookassa':
+        yooKassaMutation.mutate();
         break;
     }
   };
@@ -252,6 +289,81 @@ export default function PaymentPage() {
         >
           {t('open_in_wallet')} →
         </a>
+      </div>
+    );
+  }
+
+  // PromptPay payment view
+  if (promptPayPayment) {
+    const expiresAt = new Date(promptPayPayment.expires_at);
+    const minutesLeft = Math.max(0, Math.round((expiresAt.getTime() - Date.now()) / 60000));
+    const currentLang = i18n.language as 'en' | 'ru' | 'th';
+
+    return (
+      <div className="p-4 space-y-6">
+        <div className="text-center">
+          <h1 className="text-xl font-bold text-tg-text">{t('promptpay')}</h1>
+          <p className="text-tg-hint mt-1">
+            {promptPayPayment.instructions?.[currentLang] || promptPayPayment.instructions?.en}
+          </p>
+        </div>
+
+        {/* QR Code */}
+        <div className="flex justify-center">
+          <div className="bg-white p-4 rounded-2xl shadow-lg">
+            <img
+              src={promptPayPayment.qr_image_url}
+              alt="PromptPay QR Code"
+              className="w-56 h-56"
+            />
+          </div>
+        </div>
+
+        {/* Payment details */}
+        <div className="card p-4 space-y-4">
+          <div>
+            <label className="text-sm text-tg-hint">{t('amount_to_pay')}</label>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-2xl font-bold text-tg-text">
+                ฿{promptPayPayment.amount.toLocaleString()}
+              </span>
+              <button
+                onClick={() => copyToClipboard(promptPayPayment.amount.toString())}
+                className="text-tg-link text-sm"
+              >
+                {t('copy')}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm text-tg-hint">{t('recipient')}</label>
+            <p className="font-medium text-tg-text mt-1">{promptPayPayment.account_name}</p>
+            <p className="text-sm text-tg-hint">{promptPayPayment.account_id_masked}</p>
+          </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-tg-hint">{t('time_remaining')}</span>
+            <span className={`font-medium ${minutesLeft < 5 ? 'text-red-500' : 'text-tg-text'}`}>
+              {minutesLeft} {t('minutes')}
+            </span>
+          </div>
+
+          {/* Status */}
+          <div className="flex items-center gap-3 p-3 bg-yellow-50 border border-yellow-200 rounded-xl">
+            <div className="animate-pulse w-3 h-3 rounded-full bg-yellow-500" />
+            <div>
+              <span className="text-yellow-800 font-medium">{t('waiting_for_payment')}</span>
+              <p className="text-xs text-yellow-600">
+                {t('payment_will_be_confirmed_manually')}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-center text-sm text-tg-hint">
+          {t('promptpay_note')}
+        </p>
       </div>
     );
   }
@@ -373,6 +485,54 @@ export default function PaymentPage() {
             selectedMethod === 'telegram_stars' ? 'border-tg-button bg-tg-button text-white' : 'border-tg-hint'
           }`}>
             {selectedMethod === 'telegram_stars' && '✓'}
+          </div>
+        </button>
+
+        {/* PromptPay (Thai QR) */}
+        <button
+          onClick={() => {
+            setSelectedMethod('promptpay');
+            hapticImpact('light');
+          }}
+          className={`w-full card p-4 flex items-center gap-4 transition-all ${
+            selectedMethod === 'promptpay' ? 'ring-2 ring-tg-button' : ''
+          }`}
+        >
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white text-lg font-bold">
+            PP
+          </div>
+          <div className="flex-1 text-left">
+            <h3 className="font-semibold text-tg-text">{t('promptpay')}</h3>
+            <p className="text-sm text-tg-hint">{t('promptpay_desc')}</p>
+          </div>
+          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+            selectedMethod === 'promptpay' ? 'border-tg-button bg-tg-button text-white' : 'border-tg-hint'
+          }`}>
+            {selectedMethod === 'promptpay' && '✓'}
+          </div>
+        </button>
+
+        {/* YooKassa (Russian Payments) */}
+        <button
+          onClick={() => {
+            setSelectedMethod('yookassa');
+            hapticImpact('light');
+          }}
+          className={`w-full card p-4 flex items-center gap-4 transition-all ${
+            selectedMethod === 'yookassa' ? 'ring-2 ring-tg-button' : ''
+          }`}
+        >
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-lg font-bold">
+            ЮK
+          </div>
+          <div className="flex-1 text-left">
+            <h3 className="font-semibold text-tg-text">{t('yookassa')}</h3>
+            <p className="text-sm text-tg-hint">{t('yookassa_methods')}</p>
+          </div>
+          <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+            selectedMethod === 'yookassa' ? 'border-tg-button bg-tg-button text-white' : 'border-tg-hint'
+          }`}>
+            {selectedMethod === 'yookassa' && '✓'}
           </div>
         </button>
 

@@ -681,6 +681,58 @@ export const paymentsApi = {
     });
     return data.data;
   },
+
+  // PromptPay (Thai QR)
+  createPromptPay: async (bookingReference: string) => {
+    const { data } = await api.post<ApiResponse<{
+      payment_id: number;
+      qr_payload: string;
+      qr_image_url: string;
+      amount: number;
+      currency: string;
+      account_name: string;
+      account_id_masked: string;
+      expires_at: string;
+      instructions: { th: string; en: string; ru: string };
+    }>>('/payments/promptpay/create', { booking_reference: bookingReference });
+    return data.data;
+  },
+
+  // YooKassa (Russian Payments)
+  createYooKassa: async (bookingReference: string, paymentMethod: string = 'bank_card') => {
+    const { data } = await api.post<ApiResponse<{
+      payment_id: string;
+      confirmation_url: string;
+      status: string;
+      amount: number;
+      currency: string;
+    }>>('/payments/yookassa/create', {
+      booking_reference: bookingReference,
+      payment_method: paymentMethod,
+    });
+    return data.data;
+  },
+
+  getYooKassaStatus: async (paymentId: string) => {
+    const { data } = await api.get<ApiResponse<{
+      id: string;
+      status: string;
+      paid: boolean;
+      amount: { value: string; currency: string };
+    }>>(`/payments/yookassa/status/${paymentId}`);
+    return data.data;
+  },
+
+  getYooKassaMethods: async () => {
+    const { data } = await api.get<ApiResponse<{
+      id: string;
+      name: string;
+      name_ru: string;
+      icon: string;
+      description: string;
+    }[]>>('/payments/yookassa/methods');
+    return data.data;
+  },
 };
 
 export default api;
