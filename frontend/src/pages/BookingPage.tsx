@@ -8,7 +8,10 @@ import { usePrice } from '@/hooks/usePrice';
 import { useTelegram } from '@/hooks/useTelegram';
 import { Skeleton } from '@/components/common/Skeleton';
 import { ErrorState } from '@/components/common/ErrorState';
-import type { BookableType } from '@/types';
+import { AddonsSelector } from '@/components/booking/AddonsSelector';
+import { PackageSelector } from '@/components/booking/PackageSelector';
+import { GiftCardInput, AppliedGiftCard } from '@/components/booking/GiftCardInput';
+import type { BookableType, SelectedAddon, Package } from '@/types';
 
 export default function BookingPage() {
   const { type, id } = useParams<{ type: BookableType; id: string }>();
@@ -17,6 +20,7 @@ export default function BookingPage() {
   const { formatPrice } = usePrice();
   const { showBackButton, hideBackButton, showMainButton, hideMainButton, setMainButtonLoading, hapticImpact, hapticNotification } = useTelegram();
 
+  // Base booking state
   const [date, setDate] = useState(format(addDays(new Date(), 1), 'yyyy-MM-dd'));
   const [hours, setHours] = useState(8);
   const [startTime, setStartTime] = useState('09:00');
@@ -27,8 +31,17 @@ export default function BookingPage() {
   const [useCashback, setUseCashback] = useState(0);
   const [specialRequests, setSpecialRequests] = useState('');
 
+  // Upselling state
+  const [selectedAddons, setSelectedAddons] = useState<SelectedAddon[]>([]);
+  const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
+  const [appliedGiftCard, setAppliedGiftCard] = useState<AppliedGiftCard | null>(null);
+
+  // UI state
+  const [showExtras, setShowExtras] = useState(false);
+
   const isVessel = type === 'vessel';
   const itemId = parseInt(id!, 10);
+  const totalGuests = adults + children;
 
   // Fetch item details
   const { data: item, isLoading: itemLoading } = useQuery({
@@ -37,9 +50,9 @@ export default function BookingPage() {
     enabled: !!id,
   });
 
-  // Calculate price
+  // Calculate price with all options
   const { data: calculation, isLoading: calcLoading, refetch: recalculate } = useQuery({
-    queryKey: ['booking-calc', type, itemId, date, hours, adults, children, pickup, promoCode, useCashback],
+    queryKey: ['booking-calc', type, itemId, date, hours, adults, children, pickup, promoCode, useCashback, selectedAddons, selectedPackage?.id, appliedGiftCard?.code],
     queryFn: () => bookingsApi.calculate({
       type: type!,
       item_id: itemId,
@@ -50,6 +63,9 @@ export default function BookingPage() {
       pickup,
       promo_code: promoCode || undefined,
       use_cashback: useCashback,
+      addons: selectedAddons,
+      package_id: selectedPackage?.id,
+      gift_card_code: appliedGiftCard?.code,
     }),
     enabled: !!item,
   });
@@ -68,6 +84,9 @@ export default function BookingPage() {
       promo_code: promoCode || undefined,
       use_cashback: useCashback,
       special_requests: specialRequests || undefined,
+      addons: selectedAddons,
+      package_id: selectedPackage?.id,
+      gift_card_code: appliedGiftCard?.code,
     }),
     onSuccess: (booking) => {
       hapticNotification('success');
@@ -102,6 +121,13 @@ export default function BookingPage() {
   useEffect(() => {
     setMainButtonLoading(createBooking.isPending);
   }, [createBooking.isPending, setMainButtonLoading]);
+
+  // Clear addons when package is selected
+  useEffect(() => {
+    if (selectedPackage) {
+      setSelectedAddons([]);
+    }
+  }, [selectedPackage]);
 
   if (itemLoading) {
     return (
@@ -245,49 +271,103 @@ export default function BookingPage() {
           </div>
         )}
 
-        {/* Promo Code */}
-        <div className="card p-4">
-          <h2 className="font-semibold text-tg-text mb-3">{t('promo_code')}</h2>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={promoCode}
-              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
-              placeholder="Enter code"
-              className="input flex-1"
-            />
-            <button
-              onClick={() => recalculate()}
-              className="btn-primary"
-            >
-              {t('apply')}
-            </button>
-          </div>
-          {calculation?.promo && 'discount' in calculation.promo && (
-            <p className="text-sm text-green-600 mt-2">
-              ✓ -{formatPrice(calculation.promo.discount)} discount applied!
-            </p>
-          )}
-        </div>
+        {/* Packages Section */}
+        <PackageSelector
+          type={type!}
+          itemId={itemId}
+          guests={totalGuests}
+          hours={isVessel ? hours : undefined}
+          selectedPackage={selectedPackage}
+          onPackageSelect={(pkg) => {
+            setSelectedPackage(pkg);
+            hapticImpact('light');
+          }}
+        />
 
-        {/* Cashback */}
-        {calculation?.cashback && calculation.cashback.available > 0 && (
-          <div className="card p-4">
-            <h2 className="font-semibold text-tg-text mb-3">{t('use_cashback')}</h2>
-            <p className="text-sm text-tg-hint mb-2">
-              {t('available_cashback')}: {formatPrice(calculation.cashback.available)}
-            </p>
-            <input
-              type="range"
-              min={0}
-              max={calculation.cashback.max_usage}
-              value={useCashback}
-              onChange={(e) => setUseCashback(parseFloat(e.target.value))}
-              className="w-full"
+        {/* Addons Section (only if no package selected) */}
+        {!selectedPackage && (
+          <AddonsSelector
+            type={type!}
+            itemId={itemId}
+            itemType={isVessel ? (item as any).type : (item as any).category}
+            guests={totalGuests}
+            hours={isVessel ? hours : undefined}
+            selectedAddons={selectedAddons}
+            onAddonsChange={(addons) => {
+              setSelectedAddons(addons);
+              hapticImpact('light');
+            }}
+          />
+        )}
+
+        {/* Toggle for more options */}
+        <button
+          onClick={() => setShowExtras(!showExtras)}
+          className="w-full card p-4 flex items-center justify-between"
+        >
+          <span className="text-tg-text font-medium">
+            🎟️ {t('discounts_and_payments')}
+          </span>
+          <span className={`transition-transform ${showExtras ? 'rotate-180' : ''}`}>
+            ▼
+          </span>
+        </button>
+
+        {showExtras && (
+          <div className="space-y-4">
+            {/* Promo Code */}
+            <div className="card p-4">
+              <h2 className="font-semibold text-tg-text mb-3">{t('promo_code')}</h2>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                  placeholder="Enter code"
+                  className="input flex-1"
+                />
+                <button
+                  onClick={() => recalculate()}
+                  className="btn-primary"
+                >
+                  {t('apply')}
+                </button>
+              </div>
+              {calculation?.promo && 'discount' in calculation.promo && (
+                <p className="text-sm text-green-600 mt-2">
+                  ✓ -{formatPrice(calculation.promo.discount)} discount applied!
+                </p>
+              )}
+            </div>
+
+            {/* Gift Card */}
+            <GiftCardInput
+              orderAmount={calculation?.total_thb || 0}
+              appliesTo={type!}
+              appliedCard={appliedGiftCard}
+              onApply={setAppliedGiftCard}
             />
-            <p className="text-sm text-tg-accent-text mt-1">
-              Using: {formatPrice(useCashback)}
-            </p>
+
+            {/* Cashback */}
+            {calculation?.cashback && calculation.cashback.available > 0 && (
+              <div className="card p-4">
+                <h2 className="font-semibold text-tg-text mb-3">{t('use_cashback')}</h2>
+                <p className="text-sm text-tg-hint mb-2">
+                  {t('available_cashback')}: {formatPrice(calculation.cashback.available)}
+                </p>
+                <input
+                  type="range"
+                  min={0}
+                  max={calculation.cashback.max_usage}
+                  value={useCashback}
+                  onChange={(e) => setUseCashback(parseFloat(e.target.value))}
+                  className="w-full"
+                />
+                <p className="text-sm text-tg-accent-text mt-1">
+                  Using: {formatPrice(useCashback)}
+                </p>
+              </div>
+            )}
           </div>
         )}
 
@@ -309,18 +389,56 @@ export default function BookingPage() {
             <h2 className="font-semibold text-tg-text mb-3">Price Summary</h2>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
+                <span className="text-tg-hint">{t('base_price')}</span>
+                <span className="text-tg-text">{formatPrice(calculation.pricing.base_price_thb)}</span>
+              </div>
+
+              {calculation.pricing.extras_price_thb > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-tg-hint">
+                    {selectedPackage ? t('package') : t('addons')}
+                  </span>
+                  <span className="text-tg-text">+{formatPrice(calculation.pricing.extras_price_thb)}</span>
+                </div>
+              )}
+
+              {calculation.pricing.pickup_fee_thb > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-tg-hint">{t('pickup')}</span>
+                  <span className="text-tg-text">+{formatPrice(calculation.pricing.pickup_fee_thb)}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between">
                 <span className="text-tg-hint">{t('subtotal')}</span>
                 <span className="text-tg-text">{formatPrice(calculation.pricing.subtotal_thb)}</span>
               </div>
 
               {calculation.discounts.total > 0 && (
-                <div className="flex justify-between text-green-600">
-                  <span>{t('discount')}</span>
-                  <span>-{formatPrice(calculation.discounts.total)}</span>
-                </div>
+                <>
+                  <div className="border-t border-tg-secondary-bg my-2" />
+                  {calculation.discounts.promo > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>{t('promo_discount')}</span>
+                      <span>-{formatPrice(calculation.discounts.promo)}</span>
+                    </div>
+                  )}
+                  {calculation.discounts.cashback > 0 && (
+                    <div className="flex justify-between text-green-600">
+                      <span>{t('cashback_used')}</span>
+                      <span>-{formatPrice(calculation.discounts.cashback)}</span>
+                    </div>
+                  )}
+                  {appliedGiftCard && (
+                    <div className="flex justify-between text-purple-600">
+                      <span>{t('gift_card')}</span>
+                      <span>-{formatPrice(appliedGiftCard.amountToUse)}</span>
+                    </div>
+                  )}
+                </>
               )}
 
-              <div className="divider" />
+              <div className="border-t border-tg-secondary-bg my-2" />
 
               <div className="flex justify-between font-semibold">
                 <span className="text-tg-text">{t('total')}</span>

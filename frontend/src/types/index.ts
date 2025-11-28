@@ -318,3 +318,174 @@ export interface AppSettings {
   supported_languages: string[];
   supported_currencies: string[];
 }
+
+// Addon types
+export interface AddonCategory {
+  id: number;
+  slug: string;
+  name_en: string;
+  name_ru?: string;
+  name_th?: string;
+  icon: string;
+  applies_to: 'vessel' | 'tour' | 'all';
+  addons?: Addon[];
+}
+
+export interface Addon {
+  id: number;
+  category_id: number;
+  slug: string;
+  name_en: string;
+  name_ru?: string;
+  name_th?: string;
+  description_en?: string;
+  description_ru?: string;
+  price_thb: number;
+  price_type: 'fixed' | 'per_person' | 'per_hour' | 'per_item';
+  min_quantity?: number;
+  max_quantity?: number;
+  is_popular: boolean;
+  icon?: string;
+}
+
+export interface SelectedAddon {
+  addon_id: number;
+  quantity: number;
+  name?: string;
+  price?: number;
+}
+
+// Package types
+export interface Package {
+  id: number;
+  slug: string;
+  name_en: string;
+  name_ru?: string;
+  name_th?: string;
+  short_description_en?: string;
+  description_en?: string;
+  type: 'romantic' | 'family' | 'corporate' | 'adventure' | 'party' | 'wedding';
+  applies_to: 'vessel' | 'tour' | 'all';
+  included_addons: PackageAddon[];
+  base_price_thb: number;
+  discount_percent: number;
+  final_price_thb: number;
+  image?: string;
+  badge?: string;
+  is_featured: boolean;
+}
+
+export interface PackageAddon {
+  addon_id: number;
+  name: string;
+  quantity: number;
+  original_price: number;
+  icon?: string;
+}
+
+// Gift Card types
+export interface GiftCard {
+  id: number;
+  code: string;
+  amount_thb: number;
+  balance_thb: number;
+  status: 'pending' | 'active' | 'used' | 'expired' | 'cancelled';
+  design_template: string;
+  purchaser_name?: string;
+  recipient_name?: string;
+  personal_message?: string;
+  valid_until: string;
+  created_at: string;
+}
+
+export interface GiftCardTransaction {
+  id: number;
+  gift_card_id: number;
+  type: 'purchase' | 'redemption' | 'refund';
+  amount_thb: number;
+  balance_after_thb: number;
+  booking_reference?: string;
+  created_at: string;
+}
+
+// Loyalty types
+export interface LoyaltyTier {
+  id: number;
+  name: string;
+  slug: string;
+  min_spent_thb: number;
+  cashback_percent: number;
+  discount_percent: number;
+  priority_support: boolean;
+  free_cancellation: boolean;
+  icon: string;
+  color: string;
+}
+
+export interface LoyaltyStatus {
+  current_tier: LoyaltyTier;
+  total_spent_thb: number;
+  next_tier?: LoyaltyTier;
+  amount_to_next_tier?: number;
+  benefits: string[];
+}
+
+// Payment types
+export interface PaymentMethod {
+  id: string;
+  name: string;
+  type: 'card' | 'crypto' | 'telegram_stars' | 'bank_transfer';
+  icon: string;
+  enabled: boolean;
+  min_amount?: number;
+  max_amount?: number;
+  fee_percent?: number;
+}
+
+export interface PaymentIntent {
+  id: string;
+  booking_reference: string;
+  amount_thb: number;
+  currency: string;
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  payment_method: string;
+  payment_url?: string;
+  expires_at?: string;
+  metadata?: Record<string, unknown>;
+}
+
+// Analytics types (for admin)
+export interface AnalyticsSummary {
+  period: string;
+  revenue: {
+    total_thb: number;
+    change_percent: number;
+    by_type: { vessels: number; tours: number };
+  };
+  bookings: {
+    total: number;
+    change_percent: number;
+    by_status: Record<BookingStatus, number>;
+  };
+  users: {
+    total: number;
+    new: number;
+    active: number;
+  };
+  popular_items: Array<{
+    id: number;
+    type: 'vessel' | 'tour';
+    name: string;
+    bookings_count: number;
+    revenue_thb: number;
+  }>;
+}
+
+export interface RevenueChart {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    color: string;
+  }[];
+}

@@ -160,9 +160,30 @@ try {
     // Reviews
     $router->post('/api/reviews', 'ReviewController@create', [AuthMiddleware::class]);
 
-    // Payments
+    // ===================
+    // PAYMENTS
+    // ===================
+
+    // Payment methods
+    $router->get('/api/payments/methods', 'PaymentController@methods');
+
+    // Stripe
+    $router->post('/api/payments/stripe/create', 'PaymentController@createStripe', [AuthMiddleware::class]);
+    $router->post('/api/payments/stripe/confirm', 'PaymentController@confirmStripe', [AuthMiddleware::class]);
+    $router->post('/api/payments/stripe/webhook', 'PaymentController@stripeWebhook');
+
+    // Crypto (NowPayments)
+    $router->post('/api/payments/crypto/create', 'PaymentController@createCrypto', [AuthMiddleware::class]);
+    $router->get('/api/payments/crypto/status/{payment_id}', 'PaymentController@cryptoStatus');
+    $router->get('/api/payments/crypto/currencies', 'PaymentController@cryptoCurrencies');
+    $router->post('/api/payments/crypto/webhook', 'PaymentController@cryptoWebhook');
+
+    // Telegram Stars
     $router->post('/api/payments/telegram-stars/create', 'PaymentController@createTelegramStars', [AuthMiddleware::class]);
     $router->post('/api/payments/telegram-stars/confirm', 'PaymentController@confirmTelegramStars', [AuthMiddleware::class]);
+
+    // Bank Transfer
+    $router->get('/api/payments/bank-transfer/{reference}', 'PaymentController@bankTransferDetails');
 
     // ===================
     // TELEGRAM WEBHOOK
@@ -182,7 +203,21 @@ try {
     // Admin Dashboard
     $router->get('/api/admin/dashboard', 'Admin\\DashboardController@index', [AdminAuthMiddleware::class]);
     $router->get('/api/admin/dashboard/stats', 'Admin\\DashboardController@quickStats', [AdminAuthMiddleware::class]);
-    $router->get('/api/admin/analytics', 'Admin\\DashboardController@analytics', [AdminAuthMiddleware::class]);
+
+    // Admin Analytics
+    $router->get('/api/admin/analytics', 'Admin\\AnalyticsController@dashboard', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/dashboard', 'Admin\\AnalyticsController@dashboard', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/revenue', 'Admin\\AnalyticsController@revenue', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/bookings', 'Admin\\AnalyticsController@bookings', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/funnel', 'Admin\\AnalyticsController@funnel', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/customers', 'Admin\\AnalyticsController@customers', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/popular-items', 'Admin\\AnalyticsController@popularItems', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/payment-methods', 'Admin\\AnalyticsController@paymentMethods', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/addons', 'Admin\\AnalyticsController@addons', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/packages', 'Admin\\AnalyticsController@packages', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/gift-cards', 'Admin\\AnalyticsController@giftCards', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/vendors', 'Admin\\AnalyticsController@vendors', [AdminAuthMiddleware::class]);
+    $router->get('/api/admin/analytics/export', 'Admin\\AnalyticsController@export', [AdminAuthMiddleware::class]);
 
     // Admin Vessels Management
     $router->get('/api/admin/vessels', 'Admin\\VesselsController@index', [AdminAuthMiddleware::class]);

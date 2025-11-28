@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk';
 import { useAppStore } from '@/store/appStore';
@@ -16,6 +16,19 @@ import FavoritesPage from '@/pages/FavoritesPage';
 import BookingsHistoryPage from '@/pages/BookingsHistoryPage';
 import SearchPage from '@/pages/SearchPage';
 import { OfflineIndicator, UpdateNotification } from '@/components/common/OfflineIndicator';
+import { Skeleton } from '@/components/common/Skeleton';
+
+// Lazy loaded pages
+const GiftCardsPage = lazy(() => import('@/pages/GiftCardsPage'));
+const PaymentPage = lazy(() => import('@/pages/PaymentPage'));
+
+// Loading fallback
+const PageLoader = () => (
+  <div className="p-4 space-y-4">
+    <Skeleton className="h-32 w-full" />
+    <Skeleton className="h-48 w-full" />
+  </div>
+);
 
 function App() {
   const { setUser, setTheme, setLanguage } = useAppStore();
@@ -82,6 +95,21 @@ function App() {
             <Route path="/tours/:slug" element={<TourDetailPage />} />
             <Route path="/booking/:type/:id" element={<BookingPage />} />
             <Route path="/booking/confirm/:reference" element={<BookingConfirmPage />} />
+            <Route path="/payment/:reference" element={
+              <Suspense fallback={<PageLoader />}>
+                <PaymentPage />
+              </Suspense>
+            } />
+            <Route path="/gift-cards" element={
+              <Suspense fallback={<PageLoader />}>
+                <GiftCardsPage />
+              </Suspense>
+            } />
+            <Route path="/gift-cards/*" element={
+              <Suspense fallback={<PageLoader />}>
+                <GiftCardsPage />
+              </Suspense>
+            } />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/bookings" element={<BookingsHistoryPage />} />
