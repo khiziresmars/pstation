@@ -135,7 +135,7 @@ class TelegramController
         $keyboard = [
             'inline_keyboard' => [[
                 [
-                    'text' => '🚤 Open Phuket Yachts',
+                    'text' => '🚤 Open Phuket Station',
                     'web_app' => ['url' => $appUrl],
                 ],
             ]],

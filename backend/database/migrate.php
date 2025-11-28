@@ -14,7 +14,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
 echo "===========================================\n";
-echo "  Phuket Yacht & Tours - Database Migration\n";
+echo "  Phuket Station - Database Migration\n";
 echo "===========================================\n\n";
 
 try {

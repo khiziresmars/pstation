@@ -115,7 +115,7 @@ return [
         'address' => 'Address',
 
         // About
-        'about_title' => 'About Phuket Yacht & Tours',
+        'about_title' => 'About Phuket Station',
         'about_intro' => 'We are a premier yacht charter and tour company based in Phuket, Thailand.',
         'our_story' => 'Our Story',
         'our_fleet' => 'Our Fleet',
@@ -129,7 +129,7 @@ return [
         'newsletter' => 'Newsletter',
         'newsletter_desc' => 'Subscribe for special offers and updates',
         'subscribe' => 'Subscribe',
-        'copyright' => '© 2024 Phuket Yacht & Tours. All rights reserved.',
+        'copyright' => '© 2024 Phuket Station. All rights reserved.',
         'privacy' => 'Privacy Policy',
         'terms' => 'Terms of Service',
 
@@ -263,7 +263,7 @@ return [
         'address' => 'Адрес',
 
         // About
-        'about_title' => 'О Phuket Yacht & Tours',
+        'about_title' => 'О Phuket Station',
         'about_intro' => 'Мы — ведущая компания по аренде яхт и организации туров на Пхукете, Таиланд.',
         'our_story' => 'Наша история',
         'our_fleet' => 'Наш флот',
@@ -277,7 +277,7 @@ return [
         'newsletter' => 'Рассылка',
         'newsletter_desc' => 'Подпишитесь на спецпредложения',
         'subscribe' => 'Подписаться',
-        'copyright' => '© 2024 Phuket Yacht & Tours. Все права защищены.',
+        'copyright' => '© 2024 Phuket Station. Все права защищены.',
         'privacy' => 'Политика конфиденциальности',
         'terms' => 'Условия использования',
 
@@ -411,7 +411,7 @@ return [
         'address' => 'ที่อยู่',
 
         // About
-        'about_title' => 'เกี่ยวกับ Phuket Yacht & Tours',
+        'about_title' => 'เกี่ยวกับ Phuket Station',
         'about_intro' => 'เราเป็นบริษัทเช่าเรือยอทช์และทัวร์ชั้นนำในภูเก็ต ประเทศไทย',
         'our_story' => 'เรื่องราวของเรา',
         'our_fleet' => 'เรือของเรา',
@@ -425,7 +425,7 @@ return [
         'newsletter' => 'จดหมายข่าว',
         'newsletter_desc' => 'สมัครรับข้อเสนอพิเศษและข่าวสาร',
         'subscribe' => 'สมัคร',
-        'copyright' => '© 2024 Phuket Yacht & Tours. สงวนลิขสิทธิ์',
+        'copyright' => '© 2024 Phuket Station. สงวนลิขสิทธิ์',
         'privacy' => 'นโยบายความเป็นส่วนตัว',
         'terms' => 'ข้อกำหนดการใช้งาน',
 

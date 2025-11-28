@@ -203,7 +203,7 @@ export default function GiftCardsPage() {
                 </div>
               </div>
               <div className="mt-8">
-                <div className="text-xs opacity-80">Phuket Yacht & Tours</div>
+                <div className="text-xs opacity-80">Phuket Station</div>
                 <div className="font-mono text-lg mt-1">XXXX-XXXX-XXXX</div>
               </div>
             </div>
@@ -339,7 +339,7 @@ export default function GiftCardsPage() {
                 <div className="mt-2 text-sm">From: {senderName}</div>
               )}
               <div className="mt-6">
-                <div className="text-xs opacity-80">Phuket Yacht & Tours</div>
+                <div className="text-xs opacity-80">Phuket Station</div>
                 <div className="text-xs opacity-60 mt-1">Valid for 12 months</div>
               </div>
             </div>

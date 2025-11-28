@@ -18,7 +18,7 @@ class SEO
     private array $alternates = [];
     private array $structuredData = [];
 
-    private string $siteName = 'Phuket Yacht & Tours';
+    private string $siteName = 'Phuket Station';
     private string $defaultImage = '/images/og-default.jpg';
     private string $baseUrl;
 

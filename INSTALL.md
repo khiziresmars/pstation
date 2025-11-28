@@ -1,4 +1,4 @@
-# Phuket Yacht & Tours - Installation Guide
+# Phuket Station - Installation Guide
 
 ## Quick Start (Automatic)
 
@@ -200,7 +200,7 @@ sudo certbot --nginx -d your-domain.com -d www.your-domain.com
 
 ```env
 # Application
-APP_NAME="Phuket Yacht & Tours"
+APP_NAME="Phuket Station"
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://your-domain.com
@@ -233,7 +233,7 @@ GOOGLE_CLIENT_SECRET=xxx
 
 ```env
 VITE_API_URL=https://your-domain.com/api
-VITE_APP_NAME=Phuket Yacht & Tours
+VITE_APP_NAME=Phuket Station
 VITE_TELEGRAM_BOT_USERNAME=YourBotUsername
 ```
 

@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Phuket Yacht & Tours - Public Website
+ * Phuket Station - Public Website
  * Fast PHP-based website with server-side rendering
  */
 
@@ -62,7 +62,7 @@ try {
     // Initialize view engine
     $view = new View(WEBSITE_PATH . '/templates', $lang);
     $view->setGlobal('lang', $lang);
-    $view->setGlobal('app_name', $_ENV['APP_NAME'] ?? 'Phuket Yacht & Tours');
+    $view->setGlobal('app_name', $_ENV['APP_NAME'] ?? 'Phuket Station');
     $view->setGlobal('current_url', $_SERVER['REQUEST_URI'] ?? '/');
 
     // Assets helper

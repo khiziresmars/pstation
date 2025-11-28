@@ -188,7 +188,7 @@ export default function BookingConfirmPage() {
         </button>
 
         <button
-          onClick={() => shareUrl(`Check out Phuket Yachts!`, `I just booked a trip with Phuket Yacht & Tours!`)}
+          onClick={() => shareUrl(`Check out Phuket Yachts!`, `I just booked a trip with Phuket Station!`)}
           className="btn-outline w-full"
         >
           Share with Friends

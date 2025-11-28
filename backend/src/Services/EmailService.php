@@ -33,7 +33,7 @@ class EmailService
             'username' => $_ENV['MAIL_USERNAME'] ?? '',
             'password' => $_ENV['MAIL_PASSWORD'] ?? '',
             'from_address' => $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@phuket-yachts.com',
-            'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'Phuket Yachts & Tours',
+            'from_name' => $_ENV['MAIL_FROM_NAME'] ?? 'Phuket Station & Tours',
         ];
     }
 
@@ -291,13 +291,13 @@ class EmailService
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚤 Phuket Yachts & Tours</h1>
+            <h1>🚤 Phuket Station & Tours</h1>
         </div>
         <div class="content">
             {$body}
         </div>
         <div class="footer">
-            <p>Phuket Yachts & Tours Co., Ltd.</p>
+            <p>Phuket Station & Tours Co., Ltd.</p>
             <p>© 2024 All rights reserved</p>
         </div>
     </div>
@@ -336,7 +336,7 @@ HTML;
     <p><strong>Total:</strong> ฿{$b['total_price_thb']}</p>
 </div>
 <p>We look forward to seeing you!</p>
-<p>Best regards,<br>Phuket Yachts & Tours Team</p>
+<p>Best regards,<br>Phuket Station & Tours Team</p>
 HTML;
     }
 

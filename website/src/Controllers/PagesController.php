@@ -16,7 +16,7 @@ class PagesController extends BaseController
     {
         $this->seo
             ->title('About Us')
-            ->description('Learn about Phuket Yacht & Tours - your premier yacht charter and island tour company in Phuket, Thailand.')
+            ->description('Learn about Phuket Station - your premier yacht charter and island tour company in Phuket, Thailand.')
             ->canonical('/about')
             ->breadcrumbs([
                 'Home' => '/',
@@ -45,7 +45,7 @@ class PagesController extends BaseController
     {
         $this->seo
             ->title('Contact Us')
-            ->description('Get in touch with Phuket Yacht & Tours. We are here to help you plan your perfect yacht charter or island tour.')
+            ->description('Get in touch with Phuket Station. We are here to help you plan your perfect yacht charter or island tour.')
             ->canonical('/contact')
             ->breadcrumbs([
                 'Home' => '/',
@@ -170,7 +170,7 @@ class PagesController extends BaseController
     {
         $this->seo
             ->title('Privacy Policy')
-            ->description('Learn how we protect your personal information at Phuket Yacht & Tours.')
+            ->description('Learn how we protect your personal information at Phuket Station.')
             ->canonical('/privacy');
 
         $this->render('pages/privacy');

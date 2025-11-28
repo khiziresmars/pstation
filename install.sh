@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #############################################
-# Phuket Yacht & Tours - Installation Script
+# Phuket Station - Installation Script
 # Ubuntu 24.04 LTS Full Setup
 #############################################
 
@@ -22,7 +22,7 @@ DB_PASS=""
 TELEGRAM_BOT_TOKEN=""
 TELEGRAM_WEBAPP_URL=""
 REPO_URL="https://github.com/khiziresmars/pstation.git"
-INSTALL_DIR="/var/www/phuket-yachts"
+INSTALL_DIR="/var/www/phuket-station"
 PHP_VERSION="8.3"
 NODE_VERSION="20"
 
@@ -59,7 +59,7 @@ check_root() {
 configure() {
     print_header "Configuration"
 
-    read -p "Enter domain name (e.g., phuket-yachts.com): " DOMAIN
+    read -p "Enter domain name (e.g., phuket-station.com): " DOMAIN
     if [[ -z "$DOMAIN" ]]; then
         print_error "Domain is required"
         exit 1
@@ -101,7 +101,7 @@ update_system() {
     print_header "Updating System"
     apt-get update -y
     apt-get upgrade -y
-    apt-get install -y software-properties-common curl wget git unzip
+    apt-get install -y software-properties-common curl wget git unzip dnsutils
 }
 
 # Install PHP
@@ -230,7 +230,7 @@ setup_backend() {
     # Create .env file
     cat > .env <<EOF
 # Application
-APP_NAME="Phuket Yacht & Tours"
+APP_NAME="Phuket Station"
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://${DOMAIN}
@@ -273,6 +273,12 @@ REDIS_PORT=6379
 TIMEZONE=Asia/Bangkok
 EOF
 
+    # Create required directories
+    mkdir -p "$INSTALL_DIR/backend/storage/logs"
+    mkdir -p "$INSTALL_DIR/backend/storage/uploads"
+    mkdir -p "$INSTALL_DIR/backend/storage/cache"
+    mkdir -p "$INSTALL_DIR/backend/cache"
+
     # Set permissions
     chown -R www-data:www-data "$INSTALL_DIR/backend"
     chmod -R 755 "$INSTALL_DIR/backend"
@@ -291,7 +297,7 @@ setup_frontend() {
     # Create .env file
     cat > .env <<EOF
 VITE_API_URL=https://${DOMAIN}/api
-VITE_APP_NAME=Phuket Yacht & Tours
+VITE_APP_NAME=Phuket Station
 VITE_TELEGRAM_BOT_USERNAME=
 EOF
 
@@ -325,24 +331,12 @@ run_migrations() {
 configure_nginx() {
     print_header "Configuring Nginx"
 
-    cat > /etc/nginx/sites-available/phuket-yachts <<EOF
+    # First create HTTP-only config (for initial setup before SSL)
+    cat > /etc/nginx/sites-available/phuket-station <<EOF
 server {
     listen 80;
     listen [::]:80;
     server_name ${DOMAIN} www.${DOMAIN};
-
-    # Redirect to HTTPS
-    return 301 https://\$server_name\$request_uri;
-}
-
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name ${DOMAIN} www.${DOMAIN};
-
-    # SSL will be configured by Certbot
-    # ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
-    # ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
 
     root ${INSTALL_DIR}/frontend/dist;
     index index.html;
@@ -360,37 +354,28 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header Referrer-Policy "no-referrer-when-downgrade" always;
 
-    # API routes
+    # API routes - rewrite to backend
     location /api {
-        alias ${INSTALL_DIR}/backend/public;
-        try_files \$uri \$uri/ @api;
-
-        location ~ \.php$ {
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
-            fastcgi_index index.php;
-            include fastcgi_params;
-            fastcgi_param SCRIPT_FILENAME \$request_filename;
-            fastcgi_param PATH_INFO \$fastcgi_path_info;
-        }
+        try_files \$uri \$uri/ @backend;
     }
 
-    location @api {
-        rewrite ^/api/(.*)$ /api/index.php?/$1 last;
+    location @backend {
+        fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME ${INSTALL_DIR}/backend/public/index.php;
+        fastcgi_param REQUEST_URI \$request_uri;
+        fastcgi_param QUERY_STRING \$query_string;
     }
 
-    # Backend API (alternative)
-    location ~ ^/api/ {
-        try_files \$uri \$uri/ /api/index.php?\$query_string;
-
-        location ~ \.php$ {
-            fastcgi_split_path_info ^(.+\.php)(/.+)$;
-            fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
-            fastcgi_index index.php;
-            include fastcgi_params;
-            fastcgi_param SCRIPT_FILENAME ${INSTALL_DIR}/backend/public/index.php;
-            fastcgi_param PATH_INFO \$fastcgi_path_info;
-        }
+    location ~ ^/api/(.*)$ {
+        fastcgi_pass unix:/var/run/php/php${PHP_VERSION}-fpm.sock;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME ${INSTALL_DIR}/backend/public/index.php;
+        fastcgi_param REQUEST_URI \$request_uri;
+        fastcgi_param QUERY_STRING \$query_string;
+        fastcgi_param PATH_INFO \$1;
     }
 
     # Frontend SPA
@@ -416,7 +401,7 @@ server {
 EOF
 
     # Enable site
-    ln -sf /etc/nginx/sites-available/phuket-yachts /etc/nginx/sites-enabled/
+    ln -sf /etc/nginx/sites-available/phuket-station /etc/nginx/sites-enabled/
     rm -f /etc/nginx/sites-enabled/default
 
     # Test and reload
@@ -432,10 +417,55 @@ install_ssl() {
 
     apt-get install -y certbot python3-certbot-nginx
 
-    print_msg "Run the following command to get SSL certificate:"
-    echo "  sudo certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}"
     echo ""
-    print_warn "SSL installation skipped - run manually after DNS is configured"
+    read -p "Do you want to automatically install SSL certificate now? (y/n): " install_ssl_now
+
+    if [[ "$install_ssl_now" == "y" || "$install_ssl_now" == "Y" ]]; then
+        print_msg "Installing SSL certificate for ${DOMAIN}..."
+
+        # Check if domain resolves to this server
+        SERVER_IP=$(curl -s ifconfig.me 2>/dev/null || wget -qO- ifconfig.me 2>/dev/null || echo "unknown")
+        DOMAIN_IP=$(dig +short ${DOMAIN} 2>/dev/null | head -1)
+
+        if [[ "$SERVER_IP" != "$DOMAIN_IP" && -n "$DOMAIN_IP" ]]; then
+            print_warn "Domain ${DOMAIN} resolves to ${DOMAIN_IP}, but this server IP is ${SERVER_IP}"
+            print_warn "Make sure DNS is properly configured before proceeding"
+            read -p "Continue anyway? (y/n): " continue_ssl
+            if [[ "$continue_ssl" != "y" && "$continue_ssl" != "Y" ]]; then
+                print_warn "SSL installation skipped. Run manually later:"
+                echo "  sudo certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}"
+                return
+            fi
+        fi
+
+        # Run certbot with --non-interactive for automation, but allow user input for email
+        read -p "Enter email for SSL certificate notifications: " SSL_EMAIL
+
+        if [[ -n "$SSL_EMAIL" ]]; then
+            certbot --nginx -d ${DOMAIN} -d www.${DOMAIN} \
+                --non-interactive \
+                --agree-tos \
+                --email ${SSL_EMAIL} \
+                --redirect
+
+            if [[ $? -eq 0 ]]; then
+                print_msg "SSL certificate installed successfully!"
+
+                # Setup auto-renewal cron
+                echo "0 0 1 * * root certbot renew --quiet" >> /etc/cron.d/phuket-station
+                print_msg "SSL auto-renewal configured (monthly check)"
+            else
+                print_error "SSL certificate installation failed"
+                print_warn "You can try manually later:"
+                echo "  sudo certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}"
+            fi
+        else
+            certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}
+        fi
+    else
+        print_warn "SSL installation skipped. Run manually after DNS is configured:"
+        echo "  sudo certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}"
+    fi
 }
 
 # Setup Cron jobs
@@ -443,26 +473,26 @@ setup_cron() {
     print_header "Setting Up Cron Jobs"
 
     # Create cron file
-    cat > /etc/cron.d/phuket-yachts <<EOF
+    cat > /etc/cron.d/phuket-station <<EOF
 # Exchange rates update (every 6 hours)
-0 */6 * * * www-data cd ${INSTALL_DIR}/backend && php artisan exchange:update >> /var/log/phuket-yachts/cron.log 2>&1
+0 */6 * * * www-data cd ${INSTALL_DIR}/backend && php scripts/update-exchange-rates.php >> /var/log/phuket-station/cron.log 2>&1
 
 # Send booking reminders (every hour)
-0 * * * * www-data cd ${INSTALL_DIR}/backend && php scripts/send-reminders.php >> /var/log/phuket-yachts/cron.log 2>&1
+0 * * * * www-data cd ${INSTALL_DIR}/backend && php scripts/send-reminders.php >> /var/log/phuket-station/cron.log 2>&1
 
 # Clean expired tokens (daily at 3am)
-0 3 * * * www-data cd ${INSTALL_DIR}/backend && php scripts/cleanup.php >> /var/log/phuket-yachts/cron.log 2>&1
+0 3 * * * www-data cd ${INSTALL_DIR}/backend && php scripts/cleanup.php >> /var/log/phuket-station/cron.log 2>&1
 
 # Backup database (daily at 2am)
-0 2 * * * root mysqldump -u ${DB_USER} -p${DB_PASS} ${DB_NAME} | gzip > /var/backups/phuket-yachts/db-\$(date +\%Y\%m\%d).sql.gz
+0 2 * * * root mysqldump -u ${DB_USER} -p${DB_PASS} ${DB_NAME} | gzip > /var/backups/phuket-station/db-\$(date +\%Y\%m\%d).sql.gz
 EOF
 
     # Create log directory
-    mkdir -p /var/log/phuket-yachts
-    chown www-data:www-data /var/log/phuket-yachts
+    mkdir -p /var/log/phuket-station
+    chown www-data:www-data /var/log/phuket-station
 
     # Create backup directory
-    mkdir -p /var/backups/phuket-yachts
+    mkdir -p /var/backups/phuket-station
 
     print_msg "Cron jobs configured"
 }
@@ -515,7 +545,7 @@ EOF
 print_completion() {
     print_header "Installation Complete!"
 
-    echo -e "${GREEN}Phuket Yacht & Tours has been installed successfully!${NC}"
+    echo -e "${GREEN}Phuket Station has been installed successfully!${NC}"
     echo ""
     echo "Next steps:"
     echo "  1. Configure DNS to point ${DOMAIN} to this server"
@@ -527,7 +557,7 @@ print_completion() {
     echo "  Frontend: ${INSTALL_DIR}/frontend/dist"
     echo "  Backend:  ${INSTALL_DIR}/backend"
     echo "  Logs:     /var/log/nginx/${DOMAIN}.*.log"
-    echo "  Backups:  /var/backups/phuket-yachts/"
+    echo "  Backups:  /var/backups/phuket-station/"
     echo ""
     echo "Admin panel:"
     echo "  URL:      https://${DOMAIN}/admin"
@@ -540,7 +570,7 @@ print_completion() {
 
 # Main installation function
 main() {
-    print_header "Phuket Yacht & Tours - Installation"
+    print_header "Phuket Station - Installation"
     echo "This script will install and configure the complete application."
     echo ""
 

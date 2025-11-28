@@ -126,7 +126,7 @@ export default function AuthPage() {
         >
           🚤
         </motion.div>
-        <h1 className="text-2xl font-bold">Phuket Yacht & Tours</h1>
+        <h1 className="text-2xl font-bold">Phuket Station</h1>
         <p className="text-white/70 mt-1">{t('tagline')}</p>
       </div>
 

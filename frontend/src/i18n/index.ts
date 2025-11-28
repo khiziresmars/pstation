@@ -183,7 +183,7 @@ const resources = {
       valid_for_months: 'Valid for {{months}} months',
       for_recipient: 'For',
       from_sender: 'From',
-      phuket_yacht_tours: 'Phuket Yacht & Tours',
+      phuket_yacht_tours: 'Phuket Station',
 
       // Gift card input
       have_gift_card: 'Have a gift card?',
@@ -535,7 +535,7 @@ const resources = {
       valid_for_months: 'Действительна {{months}} мес.',
       for_recipient: 'Для',
       from_sender: 'От',
-      phuket_yacht_tours: 'Phuket Yacht & Tours',
+      phuket_yacht_tours: 'Phuket Station',
 
       // Gift card input
       have_gift_card: 'Есть подарочная карта?',
@@ -887,7 +887,7 @@ const resources = {
       valid_for_months: 'ใช้ได้ {{months}} เดือน',
       for_recipient: 'สำหรับ',
       from_sender: 'จาก',
-      phuket_yacht_tours: 'Phuket Yacht & Tours',
+      phuket_yacht_tours: 'Phuket Station',
 
       // Gift card input
       have_gift_card: 'มีบัตรของขวัญ?',

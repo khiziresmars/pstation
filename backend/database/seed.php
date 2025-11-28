@@ -14,7 +14,7 @@ $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->safeLoad();
 
 echo "===========================================\n";
-echo "  Phuket Yacht & Tours - Database Seeder\n";
+echo "  Phuket Station - Database Seeder\n";
 echo "===========================================\n\n";
 
 try {
@@ -37,17 +37,24 @@ try {
     // EXCHANGE RATES
     // ===========================================
     echo "[SEED] Exchange rates... ";
-    $pdo->exec("
-        INSERT IGNORE INTO exchange_rates (currency_code, rate_to_thb, updated_at) VALUES
-        ('THB', 1.0000, NOW()),
-        ('USD', 35.50, NOW()),
-        ('EUR', 38.20, NOW()),
-        ('GBP', 44.50, NOW()),
-        ('RUB', 0.38, NOW()),
-        ('CNY', 4.90, NOW()),
-        ('JPY', 0.24, NOW()),
-        ('AUD', 23.00, NOW())
-    ");
+    // Seed exchange rates with currency info
+    $rates = [
+        ['THB', 'Thai Baht', '฿', 1.0, 1.0],
+        ['USD', 'US Dollar', '$', 35.50, 0.0282],
+        ['EUR', 'Euro', '€', 38.20, 0.0262],
+        ['GBP', 'British Pound', '£', 44.50, 0.0225],
+        ['RUB', 'Russian Ruble', '₽', 0.38, 2.63],
+        ['CNY', 'Chinese Yuan', '¥', 4.90, 0.204],
+        ['AUD', 'Australian Dollar', 'A$', 23.00, 0.0435],
+    ];
+    foreach ($rates as $rate) {
+        $stmt = $pdo->prepare("
+            INSERT INTO exchange_rates (currency_code, currency_name, currency_symbol, rate_to_thb, rate_from_thb, is_active, last_updated_at)
+            VALUES (?, ?, ?, ?, ?, 1, NOW())
+            ON DUPLICATE KEY UPDATE rate_to_thb = VALUES(rate_to_thb), rate_from_thb = VALUES(rate_from_thb), last_updated_at = NOW()
+        ");
+        $stmt->execute($rate);
+    }
     echo "OK\n";
 
     // ===========================================
@@ -55,7 +62,7 @@ try {
     // ===========================================
     echo "[SEED] App settings... ";
     $settings = [
-        ['key' => 'app_name', 'value' => 'Phuket Yacht & Tours', 'type' => 'string'],
+        ['key' => 'app_name', 'value' => 'Phuket Station', 'type' => 'string'],
         ['key' => 'default_currency', 'value' => 'THB', 'type' => 'string'],
         ['key' => 'cashback_percent', 'value' => '5', 'type' => 'number'],
         ['key' => 'referral_bonus_thb', 'value' => '500', 'type' => 'number'],

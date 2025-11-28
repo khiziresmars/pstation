@@ -203,6 +203,7 @@ return new class {
                 paid_at TIMESTAMP NULL,
                 cancelled_at TIMESTAMP NULL,
                 cancellation_reason TEXT NULL,
+                reminder_sent TINYINT(1) DEFAULT 0,
 
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                 INDEX idx_reference (booking_reference),
@@ -444,9 +445,14 @@ return new class {
             CREATE TABLE IF NOT EXISTS exchange_rates (
                 id INT PRIMARY KEY AUTO_INCREMENT,
                 currency_code VARCHAR(3) NOT NULL UNIQUE,
+                currency_name VARCHAR(50) NOT NULL,
+                currency_symbol VARCHAR(10) NOT NULL,
                 rate_to_thb DECIMAL(12,6) NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                INDEX idx_currency (currency_code)
+                rate_from_thb DECIMAL(12,6) NOT NULL,
+                is_active TINYINT(1) DEFAULT 1,
+                last_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_currency (currency_code),
+                INDEX idx_active (is_active)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
@@ -481,6 +487,46 @@ return new class {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 UNIQUE KEY unique_availability (bookable_type, bookable_id, date),
                 INDEX idx_date (date)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+
+        // ===========================================
+        // ACTIVITY LOGS
+        // ===========================================
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS activity_logs (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                user_id INT NULL,
+                admin_id INT NULL,
+                action VARCHAR(100) NOT NULL,
+                entity_type VARCHAR(50) NULL,
+                entity_id INT NULL,
+                old_values JSON NULL,
+                new_values JSON NULL,
+                ip_address VARCHAR(45) NULL,
+                user_agent VARCHAR(500) NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_user (user_id),
+                INDEX idx_admin (admin_id),
+                INDEX idx_action (action),
+                INDEX idx_entity (entity_type, entity_id),
+                INDEX idx_created (created_at)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        ");
+
+        // ===========================================
+        // DAILY STATS (for analytics)
+        // ===========================================
+        $pdo->exec("
+            CREATE TABLE IF NOT EXISTS daily_stats (
+                id INT PRIMARY KEY AUTO_INCREMENT,
+                date DATE NOT NULL,
+                metric VARCHAR(100) NOT NULL,
+                value INT DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_stat (date, metric),
+                INDEX idx_date (date),
+                INDEX idx_metric (metric)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         ");
 
@@ -522,6 +568,8 @@ return new class {
         $tables = [
             'password_resets',
             'email_verifications',
+            'daily_stats',
+            'activity_logs',
             'availability',
             'settings',
             'exchange_rates',
