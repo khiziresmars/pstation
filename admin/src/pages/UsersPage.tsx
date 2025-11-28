@@ -38,10 +38,10 @@ export default function UsersPage() {
                     </div>
                   </td>
                   <td className="table-cell">
-                    {user.email as string || '-'}
-                    {user.telegram_id && (
-                      <span className="text-xs text-gray-500 block">TG: {user.telegram_id as string}</span>
-                    )}
+                    {(user.email as string) || '-'}
+                    {user.telegram_id ? (
+                      <span className="text-xs text-gray-500 block">TG: {String(user.telegram_id)}</span>
+                    ) : null}
                   </td>
                   <td className="table-cell">{user.bookings_count as number || 0}</td>
                   <td className="table-cell">฿{((user.cashback_balance as number) || 0).toLocaleString()}</td>

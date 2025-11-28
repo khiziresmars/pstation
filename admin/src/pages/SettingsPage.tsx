@@ -149,12 +149,21 @@ function GeneralSettings({ settings, onSave }: { settings: Record<string, unknow
 }
 
 function PaymentSettings({ settings, onSave }: { settings: Record<string, unknown>; onSave: (data: Record<string, unknown>) => void }) {
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<{
+    stripe_enabled: boolean;
+    promptpay_enabled: boolean;
+    yookassa_enabled: boolean;
+    crypto_enabled: boolean;
+    telegram_stars_enabled: boolean;
+    promptpay_account_type: string;
+    promptpay_account_id: string;
+    promptpay_merchant_name: string;
+  }>({
     stripe_enabled: (settings?.stripe_enabled as boolean) || false,
     promptpay_enabled: (settings?.promptpay_enabled as boolean) || false,
     yookassa_enabled: (settings?.yookassa_enabled as boolean) || false,
     crypto_enabled: (settings?.crypto_enabled as boolean) || false,
-    telegram_stars_enabled: (settings?.telegram_stars_enabled as boolean) || true,
+    telegram_stars_enabled: (settings?.telegram_stars_enabled as boolean) ?? true,
     promptpay_account_type: (settings?.promptpay_account_type as string) || 'phone',
     promptpay_account_id: (settings?.promptpay_account_id as string) || '',
     promptpay_merchant_name: (settings?.promptpay_merchant_name as string) || 'Phuket Station',
@@ -354,8 +363,6 @@ function ExchangeRateSettings() {
     mutationFn: (rates: Record<string, unknown>) => settingsApi.updateExchangeRates(rates),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['exchange-rates'] }),
   });
-
-  const [rates, setRates] = useState<Record<string, number>>({});
 
   if (isLoading) return <div className="card p-8 text-center">Loading...</div>;
 
