@@ -1,0 +1,401 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * Phuket Yacht & Tours Console
+ * CLI tool for maintenance tasks
+ */
+
+// Define base path
+define('BASE_PATH', dirname(__DIR__));
+
+// Autoloader
+require BASE_PATH . '/vendor/autoload.php';
+
+// Load environment
+$dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
+$dotenv->safeLoad();
+
+// Load configuration
+$config = require BASE_PATH . '/config/app.php';
+
+// Initialize application
+use App\Core\Application;
+use App\Core\Migration;
+use App\Core\Cache;
+use App\Core\Logger;
+use App\Middleware\RateLimitMiddleware;
+use App\Services\NotificationService;
+use App\Services\FileUploadService;
+
+$app = new Application($config);
+$db = $app->getDatabase();
+
+// Parse command
+$command = $argv[1] ?? 'help';
+$args = array_slice($argv, 2);
+
+// Console output helpers
+function info(string $message): void {
+    echo "\033[32m[INFO]\033[0m {$message}\n";
+}
+
+function error(string $message): void {
+    echo "\033[31m[ERROR]\033[0m {$message}\n";
+}
+
+function warning(string $message): void {
+    echo "\033[33m[WARNING]\033[0m {$message}\n";
+}
+
+function success(string $message): void {
+    echo "\033[32m✓\033[0m {$message}\n";
+}
+
+// Commands
+switch ($command) {
+    case 'migrate':
+        $migration = new Migration($db);
+
+        if (in_array('--rollback', $args)) {
+            $steps = 1;
+            foreach ($args as $i => $arg) {
+                if ($arg === '--steps' && isset($args[$i + 1])) {
+                    $steps = (int) $args[$i + 1];
+                }
+            }
+            info("Rolling back {$steps} migration(s)...");
+            $result = $migration->rollback($steps);
+            foreach ($result['rolledBack'] as $m) {
+                success("Rolled back: {$m}");
+            }
+            if (!empty($result['errors'])) {
+                foreach ($result['errors'] as $m => $err) {
+                    error("Failed: {$m} - {$err}");
+                }
+            }
+        } elseif (in_array('--reset', $args)) {
+            warning("Resetting all migrations...");
+            $result = $migration->reset();
+            info("Migrations reset and re-run.");
+        } elseif (in_array('--status', $args)) {
+            $status = $migration->status();
+            echo "\nMigration Status:\n";
+            echo str_repeat('-', 60) . "\n";
+            foreach ($status as $m) {
+                $badge = $m['status'] === 'Ran' ? "\033[32m✓\033[0m" : "\033[33m○\033[0m";
+                echo "{$badge} {$m['migration']} [{$m['status']}]\n";
+            }
+        } elseif (in_array('--create', $args)) {
+            $nameIndex = array_search('--create', $args);
+            $name = $args[$nameIndex + 1] ?? null;
+            if (!$name) {
+                error("Please provide migration name: --create <name>");
+                exit(1);
+            }
+            $path = $migration->create($name);
+            success("Created migration: {$path}");
+        } else {
+            info("Running pending migrations...");
+            $result = $migration->migrate();
+            if (empty($result['migrated'])) {
+                info("Nothing to migrate.");
+            } else {
+                foreach ($result['migrated'] as $m) {
+                    success("Migrated: {$m}");
+                }
+            }
+            if (!empty($result['errors'])) {
+                foreach ($result['errors'] as $m => $err) {
+                    error("Failed: {$m} - {$err}");
+                }
+            }
+        }
+        break;
+
+    case 'cache:clear':
+        $cache = Cache::getInstance();
+        $deleted = $cache->clear();
+        success("Cleared {$deleted} cache files.");
+        break;
+
+    case 'cache:cleanup':
+        $cache = Cache::getInstance();
+        $deleted = $cache->cleanup();
+        success("Cleaned up {$deleted} expired cache files.");
+        break;
+
+    case 'cache:stats':
+        $cache = Cache::getInstance();
+        $stats = $cache->stats();
+        echo "\nCache Statistics:\n";
+        echo str_repeat('-', 40) . "\n";
+        echo "Total files: {$stats['total_files']}\n";
+        echo "Valid: {$stats['valid']}\n";
+        echo "Expired: {$stats['expired']}\n";
+        echo "Total size: {$stats['total_size_human']}\n";
+        break;
+
+    case 'rate-limit:cleanup':
+        $deleted = RateLimitMiddleware::cleanup();
+        success("Cleaned up {$deleted} rate limit files.");
+        break;
+
+    case 'logs:cleanup':
+        $logger = new Logger('app');
+        $days = 30;
+        foreach ($args as $i => $arg) {
+            if ($arg === '--days' && isset($args[$i + 1])) {
+                $days = (int) $args[$i + 1];
+            }
+        }
+        $deleted = $logger->cleanOldLogs($days);
+        success("Cleaned up {$deleted} log files older than {$days} days.");
+        break;
+
+    case 'uploads:cleanup':
+        $upload = new FileUploadService();
+        $deleted = $upload->cleanup();
+        success("Cleaned up {$deleted} temporary upload files.");
+        break;
+
+    case 'notify:daily-summary':
+        $notification = new NotificationService();
+        $date = $args[0] ?? date('Y-m-d');
+        $notification->sendDailySummary($date);
+        success("Daily summary sent for {$date}.");
+        break;
+
+    case 'notify:test':
+        $notification = new NotificationService();
+        $message = $args[0] ?? "Test notification from console";
+        $result = $notification->sendToAdminGroup($message);
+        if ($result['success']) {
+            success("Test notification sent.");
+        } else {
+            error("Failed: " . ($result['error'] ?? 'Unknown error'));
+        }
+        break;
+
+    case 'backup':
+        $backupPath = BASE_PATH . '/storage/backups';
+        if (!is_dir($backupPath)) {
+            mkdir($backupPath, 0755, true);
+        }
+
+        $timestamp = date('Y-m-d_His');
+        $filename = "backup_{$timestamp}.sql";
+        $fullPath = "{$backupPath}/{$filename}";
+
+        $host = $_ENV['DB_HOST'] ?? 'localhost';
+        $database = $_ENV['DB_DATABASE'] ?? 'phuket_yachts';
+        $username = $_ENV['DB_USERNAME'] ?? 'root';
+        $password = $_ENV['DB_PASSWORD'] ?? '';
+
+        $command = sprintf(
+            'mysqldump -h%s -u%s -p%s %s > %s 2>/dev/null',
+            escapeshellarg($host),
+            escapeshellarg($username),
+            escapeshellarg($password),
+            escapeshellarg($database),
+            escapeshellarg($fullPath)
+        );
+
+        exec($command, $output, $returnCode);
+
+        if ($returnCode === 0 && file_exists($fullPath)) {
+            $size = round(filesize($fullPath) / 1024 / 1024, 2);
+            success("Backup created: {$filename} ({$size}MB)");
+
+            // Compress
+            if (in_array('--compress', $args)) {
+                exec("gzip {$fullPath}");
+                success("Compressed to {$filename}.gz");
+            }
+
+            // Clean old backups
+            $maxBackups = 7;
+            foreach ($args as $i => $arg) {
+                if ($arg === '--keep' && isset($args[$i + 1])) {
+                    $maxBackups = (int) $args[$i + 1];
+                }
+            }
+
+            $backups = glob("{$backupPath}/backup_*.sql*");
+            usort($backups, fn($a, $b) => filemtime($b) - filemtime($a));
+
+            if (count($backups) > $maxBackups) {
+                $toDelete = array_slice($backups, $maxBackups);
+                foreach ($toDelete as $file) {
+                    unlink($file);
+                    info("Deleted old backup: " . basename($file));
+                }
+            }
+        } else {
+            error("Backup failed!");
+            exit(1);
+        }
+        break;
+
+    case 'backup:list':
+        $backupPath = BASE_PATH . '/storage/backups';
+        $backups = glob("{$backupPath}/backup_*.sql*");
+        usort($backups, fn($a, $b) => filemtime($b) - filemtime($a));
+
+        echo "\nAvailable Backups:\n";
+        echo str_repeat('-', 60) . "\n";
+
+        if (empty($backups)) {
+            info("No backups found.");
+        } else {
+            foreach ($backups as $backup) {
+                $name = basename($backup);
+                $size = round(filesize($backup) / 1024 / 1024, 2);
+                $date = date('Y-m-d H:i:s', filemtime($backup));
+                echo "{$name} ({$size}MB) - {$date}\n";
+            }
+        }
+        break;
+
+    case 'backup:restore':
+        if (empty($args[0])) {
+            error("Please provide backup file name.");
+            exit(1);
+        }
+
+        $backupPath = BASE_PATH . '/storage/backups';
+        $filename = $args[0];
+        $fullPath = "{$backupPath}/{$filename}";
+
+        if (!file_exists($fullPath)) {
+            error("Backup file not found: {$filename}");
+            exit(1);
+        }
+
+        warning("This will OVERWRITE the current database!");
+        echo "Type 'yes' to confirm: ";
+        $confirm = trim(fgets(STDIN));
+
+        if ($confirm !== 'yes') {
+            info("Restore cancelled.");
+            exit(0);
+        }
+
+        $host = $_ENV['DB_HOST'] ?? 'localhost';
+        $database = $_ENV['DB_DATABASE'] ?? 'phuket_yachts';
+        $username = $_ENV['DB_USERNAME'] ?? 'root';
+        $password = $_ENV['DB_PASSWORD'] ?? '';
+
+        // Decompress if needed
+        if (str_ends_with($fullPath, '.gz')) {
+            exec("gunzip -k {$fullPath}");
+            $fullPath = substr($fullPath, 0, -3);
+        }
+
+        $command = sprintf(
+            'mysql -h%s -u%s -p%s %s < %s 2>/dev/null',
+            escapeshellarg($host),
+            escapeshellarg($username),
+            escapeshellarg($password),
+            escapeshellarg($database),
+            escapeshellarg($fullPath)
+        );
+
+        exec($command, $output, $returnCode);
+
+        if ($returnCode === 0) {
+            success("Database restored from {$filename}");
+        } else {
+            error("Restore failed!");
+            exit(1);
+        }
+        break;
+
+    case 'admin:create':
+        $telegramId = $args[0] ?? null;
+        $roleName = $args[1] ?? 'super_admin';
+
+        if (!$telegramId) {
+            error("Usage: admin:create <telegram_id> [role_name]");
+            exit(1);
+        }
+
+        $role = $db->queryOne("SELECT id FROM admin_roles WHERE name = ?", [$roleName]);
+        if (!$role) {
+            error("Role not found: {$roleName}");
+            exit(1);
+        }
+
+        $existing = $db->queryOne("SELECT id FROM admins WHERE telegram_id = ?", [$telegramId]);
+        if ($existing) {
+            error("Admin with this Telegram ID already exists.");
+            exit(1);
+        }
+
+        $db->insert('admins', [
+            'telegram_id' => $telegramId,
+            'role_id' => $role['id'],
+            'is_active' => 1,
+        ]);
+
+        success("Admin created with Telegram ID: {$telegramId} (Role: {$roleName})");
+        break;
+
+    case 'cron:setup':
+        echo "\nAdd these lines to your crontab (crontab -e):\n";
+        echo str_repeat('-', 60) . "\n";
+        echo "# Phuket Yachts & Tours - Daily Tasks\n";
+        echo "0 20 * * * php " . BASE_PATH . "/bin/console notify:daily-summary\n";
+        echo "0 3 * * * php " . BASE_PATH . "/bin/console backup --compress\n";
+        echo "0 4 * * * php " . BASE_PATH . "/bin/console cache:cleanup\n";
+        echo "0 4 * * * php " . BASE_PATH . "/bin/console logs:cleanup --days 30\n";
+        echo "*/5 * * * * php " . BASE_PATH . "/bin/console rate-limit:cleanup\n";
+        break;
+
+    case 'help':
+    default:
+        echo <<<HELP
+
+\033[36mPhuket Yacht & Tours Console\033[0m
+
+Usage: php bin/console <command> [options]
+
+\033[33mMigrations:\033[0m
+  migrate                    Run pending migrations
+  migrate --status           Show migration status
+  migrate --rollback         Rollback last migration
+  migrate --rollback --steps N  Rollback N migrations
+  migrate --reset            Reset and re-run all migrations
+  migrate --create <name>    Create new migration file
+
+\033[33mCache:\033[0m
+  cache:clear                Clear all cache
+  cache:cleanup              Remove expired cache files
+  cache:stats                Show cache statistics
+
+\033[33mMaintenance:\033[0m
+  rate-limit:cleanup         Clean rate limit files
+  logs:cleanup [--days N]    Clean old log files (default: 30 days)
+  uploads:cleanup            Clean temporary uploads
+
+\033[33mBackup:\033[0m
+  backup [--compress]        Create database backup
+  backup:list                List available backups
+  backup:restore <file>      Restore from backup
+
+\033[33mNotifications:\033[0m
+  notify:daily-summary       Send daily summary to admins
+  notify:test [message]      Send test notification
+
+\033[33mAdmin:\033[0m
+  admin:create <tid> [role]  Create admin by Telegram ID
+
+\033[33mSetup:\033[0m
+  cron:setup                 Show crontab configuration
+
+
+HELP;
+        break;
+}

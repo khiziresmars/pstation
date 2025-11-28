@@ -13,6 +13,7 @@ import BookingConfirmPage from '@/pages/BookingConfirmPage';
 import ProfilePage from '@/pages/ProfilePage';
 import FavoritesPage from '@/pages/FavoritesPage';
 import BookingsHistoryPage from '@/pages/BookingsHistoryPage';
+import { OfflineIndicator, UpdateNotification } from '@/components/common/OfflineIndicator';
 
 function App() {
   const { setUser, setTheme, setLanguage } = useAppStore();
@@ -66,6 +67,8 @@ function App() {
 
   return (
     <BrowserRouter>
+      <OfflineIndicator />
+      <UpdateNotification />
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
