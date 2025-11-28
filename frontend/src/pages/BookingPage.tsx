@@ -11,7 +11,7 @@ import { ErrorState } from '@/components/common/ErrorState';
 import { AddonsSelector } from '@/components/booking/AddonsSelector';
 import { PackageSelector } from '@/components/booking/PackageSelector';
 import { GiftCardInput, AppliedGiftCard } from '@/components/booking/GiftCardInput';
-import type { BookableType, SelectedAddon, Package } from '@/types';
+import type { BookableType, SelectedAddon, Package, Vessel, Tour } from '@/types';
 
 export default function BookingPage() {
   const { type, id } = useParams<{ type: BookableType; id: string }>();
@@ -44,14 +44,14 @@ export default function BookingPage() {
   const totalGuests = adults + children;
 
   // Fetch item details
-  const { data: item, isLoading: itemLoading } = useQuery({
+  const { data: item, isLoading: itemLoading } = useQuery<Vessel | Tour>({
     queryKey: [type, itemId],
-    queryFn: () => isVessel ? vesselsApi.getBySlug(id!) : toursApi.getBySlug(id!),
+    queryFn: async () => isVessel ? vesselsApi.getBySlug(id!) : toursApi.getBySlug(id!),
     enabled: !!id,
   });
 
   // Calculate price with all options
-  const { data: calculation, isLoading: calcLoading, refetch: recalculate } = useQuery({
+  const { data: calculation, refetch: recalculate } = useQuery({
     queryKey: ['booking-calc', type, itemId, date, hours, adults, children, pickup, promoCode, useCashback, selectedAddons, selectedPackage?.id, appliedGiftCard?.code],
     queryFn: () => bookingsApi.calculate({
       type: type!,

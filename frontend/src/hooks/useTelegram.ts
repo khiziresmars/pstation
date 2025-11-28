@@ -65,9 +65,11 @@ export function useTelegram() {
         text?: string;
       }>;
     },
-    callback?: (buttonId: string) => void
+    callback?: (buttonId?: string) => void
   ) => {
-    WebApp.showPopup(params, callback);
+    // Cast to any to work around strict SDK type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    WebApp.showPopup(params as any, callback as any);
   }, []);
 
   // Share
@@ -78,7 +80,8 @@ export function useTelegram() {
 
   // Open links
   const openLink = useCallback((url: string, options?: { try_instant_view?: boolean }) => {
-    WebApp.openLink(url, options);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    WebApp.openLink(url, options as any);
   }, []);
 
   const openTelegramLink = useCallback((url: string) => {

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { giftCardsApi, userApi } from '@/services/api';
 import { usePrice } from '@/hooks/usePrice';
 import { useTelegram } from '@/hooks/useTelegram';
-import { Skeleton } from '@/components/common/Skeleton';
 
 const PRESET_AMOUNTS = [1000, 2000, 5000, 10000, 20000, 50000];
 
@@ -22,7 +21,7 @@ export default function GiftCardsPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { formatPrice } = usePrice();
-  const { hapticImpact, hapticNotification, showBackButton, hideBackButton } = useTelegram();
+  const { hapticImpact, hapticNotification } = useTelegram();
 
   // Form state
   const [step, setStep] = useState<'amount' | 'design' | 'details' | 'preview'>('amount');
@@ -36,7 +35,7 @@ export default function GiftCardsPage() {
   const [deliveryMethod, setDeliveryMethod] = useState<'email' | 'telegram'>('email');
 
   // Fetch user's gift cards
-  const { data: myCards, isLoading: cardsLoading } = useQuery({
+  const { data: myCards } = useQuery({
     queryKey: ['user-gift-cards'],
     queryFn: () => userApi.getGiftCards(),
   });

@@ -165,6 +165,9 @@ export const bookingsApi = {
     special_requests?: string;
     contact_phone?: string;
     contact_email?: string;
+    addons?: SelectedAddon[];
+    package_id?: number;
+    gift_card_code?: string;
   }) => {
     const { data } = await api.post<ApiResponse<Booking>>('/bookings', bookingData);
     return data.data;
@@ -191,6 +194,9 @@ export const bookingsApi = {
     pickup?: boolean;
     promo_code?: string;
     use_cashback?: number;
+    addons?: SelectedAddon[];
+    package_id?: number;
+    gift_card_code?: string;
   }) => {
     const { data } = await api.post<ApiResponse<BookingCalculation>>('/bookings/calculate', calcData);
     return data.data;
