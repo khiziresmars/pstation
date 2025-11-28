@@ -22,7 +22,7 @@ DB_PASS=""
 TELEGRAM_BOT_TOKEN=""
 TELEGRAM_WEBAPP_URL=""
 REPO_URL="https://github.com/khiziresmars/pstation.git"
-INSTALL_DIR="/var/www/phuket-station"
+INSTALL_DIR="/var/www/pstation"
 PHP_VERSION="8.3"
 NODE_VERSION="20"
 
@@ -215,8 +215,9 @@ clone_repo() {
     print_header "Cloning Repository"
 
     if [[ -d "$INSTALL_DIR" ]]; then
-        print_warn "Directory $INSTALL_DIR already exists. Backing up..."
-        mv "$INSTALL_DIR" "${INSTALL_DIR}.backup.$(date +%Y%m%d%H%M%S)"
+        print_warn "Directory $INSTALL_DIR already exists. Removing..."
+        rm -rf "$INSTALL_DIR"
+        print_msg "Old directory removed"
     fi
 
     git clone "$REPO_URL" "$INSTALL_DIR"
