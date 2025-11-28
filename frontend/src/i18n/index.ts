@@ -240,7 +240,7 @@ const resources = {
       yookassa_desc: 'Russian Payment System',
       yookassa_methods: 'Bank cards, YooMoney, SberPay, Qiwi',
       amount_to_pay: 'Amount to Pay',
-      recipient: 'Recipient',
+      payment_recipient: 'Recipient',
       payment_will_be_confirmed_manually: 'Payment will be confirmed after verification',
 
       // ===========================================
@@ -294,7 +294,7 @@ const resources = {
       feature_languages: 'Multi-language support (EN/RU/TH)',
       contact_us: 'Contact Us',
       version: 'Version',
-      guest: 'Guest',
+      guest_user: 'Guest',
 
       // ===========================================
       // SEARCH
@@ -639,7 +639,7 @@ const resources = {
       yookassa_desc: 'Российская платёжная система',
       yookassa_methods: 'Банковские карты, ЮMoney, SberPay, Qiwi',
       amount_to_pay: 'Сумма к оплате',
-      recipient: 'Получатель',
+      payment_recipient: 'Получатель',
       payment_will_be_confirmed_manually: 'Оплата будет подтверждена после проверки',
 
       // ===========================================
@@ -693,7 +693,7 @@ const resources = {
       feature_languages: 'Поддержка языков (EN/RU/TH)',
       contact_us: 'Связаться с нами',
       version: 'Версия',
-      guest: 'Гость',
+      guest_user: 'Гость',
 
       // ===========================================
       // SEARCH
@@ -1038,7 +1038,7 @@ const resources = {
       yookassa_desc: 'ระบบชำระเงินรัสเซีย',
       yookassa_methods: 'บัตรธนาคาร, YooMoney, SberPay, Qiwi',
       amount_to_pay: 'จำนวนเงินที่ต้องชำระ',
-      recipient: 'ผู้รับเงิน',
+      payment_recipient: 'ผู้รับเงิน',
       payment_will_be_confirmed_manually: 'การชำระเงินจะได้รับการยืนยันหลังจากตรวจสอบ',
 
       // ===========================================
@@ -1092,7 +1092,7 @@ const resources = {
       feature_languages: 'รองรับหลายภาษา (EN/RU/TH)',
       contact_us: 'ติดต่อเรา',
       version: 'เวอร์ชัน',
-      guest: 'ผู้เยี่ยมชม',
+      guest_user: 'ผู้เยี่ยมชม',
 
       // ===========================================
       // SEARCH

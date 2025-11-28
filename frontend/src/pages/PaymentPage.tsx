@@ -8,6 +8,16 @@ import { useTelegram } from '@/hooks/useTelegram';
 import { Skeleton } from '@/components/common/Skeleton';
 import { ErrorState } from '@/components/common/ErrorState';
 
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp: {
+        openInvoice: (invoiceId: string, callback: (status: string) => void) => void;
+      };
+    };
+  }
+}
+
 const CRYPTO_CURRENCIES = [
   { id: 'btc', name: 'Bitcoin', symbol: 'BTC', icon: '₿', color: '#F7931A' },
   { id: 'eth', name: 'Ethereum', symbol: 'ETH', icon: 'Ξ', color: '#627EEA' },
@@ -24,7 +34,7 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { formatPrice } = usePrice();
-  const { hapticImpact, hapticNotification, showBackButton, hideBackButton, showMainButton, hideMainButton } = useTelegram();
+  const { hapticImpact, hapticNotification, showBackButton, hideBackButton, hideMainButton } = useTelegram();
 
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [selectedCrypto, setSelectedCrypto] = useState('btc');
@@ -39,8 +49,8 @@ export default function PaymentPage() {
     enabled: !!reference,
   });
 
-  // Fetch available payment methods
-  const { data: methods } = useQuery({
+  // Fetch available payment methods (for future use)
+  const { data: _methods } = useQuery({
     queryKey: ['payment-methods'],
     queryFn: () => paymentsApi.getMethods(),
   });
@@ -337,7 +347,7 @@ export default function PaymentPage() {
           </div>
 
           <div>
-            <label className="text-sm text-tg-hint">{t('recipient')}</label>
+            <label className="text-sm text-tg-hint">{t('payment_recipient')}</label>
             <p className="font-medium text-tg-text mt-1">{promptPayPayment.account_name}</p>
             <p className="text-sm text-tg-hint">{promptPayPayment.account_id_masked}</p>
           </div>
