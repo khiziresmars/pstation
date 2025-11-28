@@ -58,28 +58,28 @@ The installer will guide you through:
 - **Yacht & Boat Catalog** — Filter by type, capacity, price with beautiful galleries
 - **Tour Booking** — Phi Phi Islands, James Bond Island, Similan and more
 - **Smart Booking System** — Date/time selection, guest count, instant pricing
-- **Multi-Payment Support** — Telegram Stars, Stripe, Crypto (NowPayments)
+- **Multi-Payment Support** — Telegram Stars, Stripe, Crypto, PromptPay (Thai QR), YooKassa (Russia)
 - **Multi-currency** — THB, USD, EUR, RUB with live exchange rates
 - **Multi-Auth** — Telegram, Email/Password, Google OAuth
 - **Loyalty Program** — 5% cashback, referral bonuses, promo codes
 - **Gift Cards** — Purchase and redeem gift certificates
 - **Multilingual** — English, Russian, Thai (i18next)
-- **User Profile** — Booking history, favorites, cashback balance
-- **Admin Panel** — Full management dashboard
+- **User Profile** — Booking history, order history, settings, password change, notifications
+- **Admin Panel** — Full management dashboard with payment system toggles
 - **Vendor Portal** — Partner management system
 
 ### RU
 - **Каталог яхт и катеров** — Фильтры по типу, вместимости, цене с галереями
 - **Бронирование туров** — Острова Пхи-Пхи, Джеймс Бонд, Симиланы и другие
 - **Умная система бронирования** — Выбор даты/времени, количество гостей, мгновенный расчёт
-- **Мульти-платежи** — Telegram Stars, Stripe, Криптовалюта (NowPayments)
+- **Мульти-платежи** — Telegram Stars, Stripe, Криптовалюта, PromptPay (Тайский QR), ЮКасса (Россия)
 - **Мультивалютность** — THB, USD, EUR, RUB с актуальными курсами
 - **Мульти-авторизация** — Telegram, Email/Пароль, Google OAuth
 - **Программа лояльности** — 5% кэшбэк, реферальные бонусы, промокоды
 - **Подарочные карты** — Покупка и использование сертификатов
 - **Мультиязычность** — Английский, Русский, Тайский (i18next)
-- **Профиль пользователя** — История бронирований, избранное, баланс кэшбэка
-- **Админ-панель** — Полная панель управления
+- **Профиль пользователя** — История бронирований, история заказов, настройки, смена пароля, уведомления
+- **Админ-панель** — Полная панель управления с переключением платёжных систем
 - **Портал партнёров** — Система управления вендорами
 
 ---
@@ -165,7 +165,13 @@ pstation/
 │   │   ├── i18n/            # Translations
 │   │   └── types/           # TypeScript types
 │   └── .env.example
-├── admin/                   # Admin panel
+├── admin/                   # Admin panel (React + TypeScript)
+│   ├── src/
+│   │   ├── components/      # Layout, UI components
+│   │   ├── pages/           # Dashboard, Bookings, Settings, etc.
+│   │   ├── services/        # API client
+│   │   └── store/           # Auth state
+│   └── .env.example
 ├── nginx/
 │   └── site.conf            # Nginx config template
 └── docs/
@@ -197,6 +203,8 @@ https://your-domain.com/api
 | GET | `/bookings/{reference}` | Get booking details |
 | POST | `/payments/stripe/intent` | Create Stripe payment |
 | POST | `/payments/crypto/create` | Create crypto payment |
+| POST | `/payments/promptpay/create` | Create PromptPay QR payment |
+| POST | `/payments/yookassa/create` | Create YooKassa payment |
 | GET | `/user/profile` | Get user profile |
 | GET | `/user/bookings` | Get user bookings |
 | GET | `/user/favorites` | Get user favorites |
@@ -269,6 +277,17 @@ MAIL_FROM_NAME="Phuket Station"
 STRIPE_SECRET_KEY=sk_live_xxx
 STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 NOWPAYMENTS_API_KEY=xxx
+
+# Thai PromptPay QR
+PROMPTPAY_ENABLED=false
+PROMPTPAY_ACCOUNT_TYPE=phone
+PROMPTPAY_ACCOUNT_ID=0812345678
+PROMPTPAY_MERCHANT_NAME=Phuket Station
+
+# YooKassa (Russian Payments)
+YOOKASSA_ENABLED=false
+YOOKASSA_SHOP_ID=xxx
+YOOKASSA_SECRET_KEY=xxx
 
 # Google OAuth (optional)
 GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com

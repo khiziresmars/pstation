@@ -397,6 +397,19 @@ NOWPAYMENTS_ENABLED=false
 NOWPAYMENTS_API_KEY=xxx
 NOWPAYMENTS_IPN_SECRET=xxx
 
+# Thai PromptPay QR Payments (optional)
+PROMPTPAY_ENABLED=false
+PROMPTPAY_ACCOUNT_TYPE=phone
+PROMPTPAY_ACCOUNT_ID=0812345678
+PROMPTPAY_MERCHANT_NAME=Phuket Station
+
+# YooKassa Russian Payments (optional)
+YOOKASSA_ENABLED=false
+YOOKASSA_SHOP_ID=xxx
+YOOKASSA_SECRET_KEY=xxx
+YOOKASSA_TEST_MODE=true
+YOOKASSA_RETURN_URL=https://your-domain.com/payment/success
+
 # Google OAuth (optional)
 GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=xxx
@@ -420,6 +433,8 @@ VITE_APP_NAME=Phuket Station
 VITE_TELEGRAM_BOT_USERNAME=YourBotUsername
 VITE_STRIPE_PUBLISHABLE_KEY=pk_live_xxx
 VITE_GOOGLE_CLIENT_ID=xxx.apps.googleusercontent.com
+VITE_ENABLE_PROMPTPAY=false
+VITE_ENABLE_YOOKASSA=false
 ```
 
 ### Admin Panel (.env)
@@ -454,6 +469,8 @@ VITE_APP_NAME=Phuket Station Admin
 - [ ] Telegram webhook set
 - [ ] Email sending tested
 - [ ] Exchange rates updating
+- [ ] Payment systems configured (Stripe, PromptPay, YooKassa as needed)
+- [ ] Enable payment methods in Admin Panel → Settings
 
 ---
 

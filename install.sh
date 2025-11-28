@@ -258,6 +258,19 @@ STRIPE_WEBHOOK_SECRET=
 NOWPAYMENTS_API_KEY=
 NOWPAYMENTS_IPN_SECRET=
 
+# Thai PromptPay QR Payments
+PROMPTPAY_ENABLED=false
+PROMPTPAY_ACCOUNT_TYPE=phone
+PROMPTPAY_ACCOUNT_ID=0812345678
+PROMPTPAY_MERCHANT_NAME=Phuket Station
+
+# YooKassa (Russian Payment System)
+YOOKASSA_ENABLED=false
+YOOKASSA_SHOP_ID=
+YOOKASSA_SECRET_KEY=
+YOOKASSA_TEST_MODE=true
+YOOKASSA_RETURN_URL=https://${DOMAIN}/payment/success
+
 # Google OAuth
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
@@ -299,6 +312,8 @@ setup_frontend() {
 VITE_API_URL=https://${DOMAIN}/api
 VITE_APP_NAME=Phuket Station
 VITE_TELEGRAM_BOT_USERNAME=
+VITE_ENABLE_PROMPTPAY=false
+VITE_ENABLE_YOOKASSA=false
 EOF
 
     # Install dependencies and build
@@ -310,6 +325,29 @@ EOF
     chmod -R 755 "$INSTALL_DIR/frontend"
 
     print_msg "Frontend built successfully"
+}
+
+# Setup Admin Panel
+setup_admin() {
+    print_header "Setting Up Admin Panel"
+
+    cd "$INSTALL_DIR/admin"
+
+    # Create .env file
+    cat > .env <<EOF
+VITE_API_URL=https://${DOMAIN}/api
+VITE_APP_NAME=Phuket Station Admin
+EOF
+
+    # Install dependencies and build
+    pnpm install
+    pnpm build
+
+    # Set permissions
+    chown -R www-data:www-data "$INSTALL_DIR/admin"
+    chmod -R 755 "$INSTALL_DIR/admin"
+
+    print_msg "Admin panel built successfully"
 }
 
 # Run database migrations
@@ -376,6 +414,12 @@ server {
         fastcgi_param REQUEST_URI \$request_uri;
         fastcgi_param QUERY_STRING \$query_string;
         fastcgi_param PATH_INFO \$1;
+    }
+
+    # Admin Panel
+    location /admin {
+        alias ${INSTALL_DIR}/admin/dist;
+        try_files \$uri \$uri/ /admin/index.html;
     }
 
     # Frontend SPA
@@ -588,6 +632,7 @@ main() {
     clone_repo
     setup_backend
     setup_frontend
+    setup_admin
     run_migrations
 
     configure_nginx
