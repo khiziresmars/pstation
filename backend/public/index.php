@@ -90,6 +90,40 @@ try {
     $router->post('/api/errors/report', 'ErrorController@report');
 
     // ===================
+    // ADDONS & PACKAGES (Upselling)
+    // ===================
+
+    // Addons
+    $router->get('/api/addons/categories', 'AddonsController@categories');
+    $router->get('/api/addons/vessel', 'AddonsController@forVessel');
+    $router->get('/api/addons/tour', 'AddonsController@forTour');
+    $router->get('/api/addons/popular', 'AddonsController@popular');
+    $router->get('/api/addons/recommended', 'AddonsController@recommended');
+    $router->get('/api/addons/{id}', 'AddonsController@show');
+    $router->post('/api/addons/calculate', 'AddonsController@calculate');
+
+    // Packages (bundles)
+    $router->get('/api/packages', 'PackagesController@index');
+    $router->get('/api/packages/featured', 'PackagesController@featured');
+    $router->get('/api/packages/types', 'PackagesController@types');
+    $router->get('/api/packages/{slug}', 'PackagesController@show');
+    $router->get('/api/packages/{id}/vessels', 'PackagesController@vessels');
+    $router->get('/api/packages/{id}/tours', 'PackagesController@tours');
+    $router->post('/api/packages/calculate', 'PackagesController@calculate');
+
+    // Dynamic Pricing
+    $router->post('/api/pricing/calculate', 'PricingController@calculate');
+    $router->get('/api/pricing/calendar', 'PricingController@calendar');
+    $router->get('/api/pricing/summary', 'PricingController@summary');
+    $router->get('/api/pricing/check-date', 'PricingController@checkDate');
+
+    // Gift Cards (public)
+    $router->get('/api/gift-cards/designs', 'GiftCardController@designs');
+    $router->get('/api/gift-cards/amounts', 'GiftCardController@amounts');
+    $router->get('/api/gift-cards/validate', 'GiftCardController@validate');
+    $router->get('/api/gift-cards/check', 'GiftCardController@check');
+
+    // ===================
     // AUTHENTICATED ROUTES (Telegram Auth)
     // ===================
 
@@ -107,6 +141,15 @@ try {
     $router->put('/api/user/notifications/read-all', 'NotificationController@markAllRead', [AuthMiddleware::class]);
     $router->put('/api/user/notifications/{id}/read', 'NotificationController@markRead', [AuthMiddleware::class]);
     $router->delete('/api/user/notifications/{id}', 'NotificationController@delete', [AuthMiddleware::class]);
+
+    // User Loyalty
+    $router->get('/api/user/loyalty', 'LoyaltyController@status', [AuthMiddleware::class]);
+    $router->get('/api/user/loyalty/tiers', 'LoyaltyController@tiers', [AuthMiddleware::class]);
+
+    // User Gift Cards
+    $router->get('/api/user/gift-cards', 'GiftCardController@userCards', [AuthMiddleware::class]);
+    $router->post('/api/user/gift-cards/purchase', 'GiftCardController@purchase', [AuthMiddleware::class]);
+    $router->get('/api/user/gift-cards/{id}/transactions', 'GiftCardController@transactions', [AuthMiddleware::class]);
 
     // Bookings
     $router->post('/api/bookings', 'BookingController@create', [AuthMiddleware::class]);
