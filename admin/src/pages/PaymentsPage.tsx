@@ -20,8 +20,6 @@ export default function PaymentsPage() {
     },
   });
 
-  const [confirmData, setConfirmData] = useState({ paymentId: '', transactionRef: '' });
-
   const handleConfirm = (paymentId: string) => {
     const ref = prompt('Enter bank transaction reference:');
     if (ref) {
