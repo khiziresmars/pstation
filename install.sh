@@ -254,7 +254,7 @@ setup_backend() {
     # Create .env file
     cat > .env <<EOF
 # Application
-APP_NAME="Phuket Station"
+APP_NAME=PhuketStation
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://${DOMAIN}
@@ -286,7 +286,7 @@ NOWPAYMENTS_IPN_SECRET=
 PROMPTPAY_ENABLED=false
 PROMPTPAY_ACCOUNT_TYPE=phone
 PROMPTPAY_ACCOUNT_ID=0812345678
-PROMPTPAY_MERCHANT_NAME=Phuket Station
+PROMPTPAY_MERCHANT_NAME=PhuketStation
 
 # YooKassa (Russian Payment System)
 YOOKASSA_ENABLED=false
@@ -339,7 +339,7 @@ setup_frontend() {
     # Create .env file
     cat > .env <<EOF
 VITE_API_URL=https://${DOMAIN}/api
-VITE_APP_NAME=Phuket Station
+VITE_APP_NAME="Phuket Station"
 VITE_TELEGRAM_BOT_USERNAME=
 VITE_ENABLE_PROMPTPAY=false
 VITE_ENABLE_YOOKASSA=false
@@ -370,7 +370,7 @@ setup_admin() {
     # Create .env file
     cat > .env <<EOF
 VITE_API_URL=https://${DOMAIN}/api
-VITE_APP_NAME=Phuket Station Admin
+VITE_APP_NAME="Phuket Station Admin"
 EOF
 
     # Install dependencies and build
